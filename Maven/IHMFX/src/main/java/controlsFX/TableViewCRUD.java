@@ -297,7 +297,7 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
      * du même type que {@code elementDeReference}, remonte les autres vers le parent.
      */
     @Override
-    public void envoyer_vers_parent(int code, Object objet, GestionnaireRetour gestionnaireRetour) {
+    public void appeler_bd(int code, Object objet, GestionnaireRetour gestionnaireRetour) {
         if (objet instanceof ObjetCSA objetCSA) {
             if (elementDeReference != null && objetCSA.getType().equals(elementDeReference.getType())) {
                 remplacer_masterSet(objetCSA);
@@ -345,7 +345,7 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
             return;
         }
         affiche_console("* Le tableviewCRUD envoie l'info " + code + " - " + objet + " vers son parent " + maitreFX);
-        maitreFX.envoyer_vers_parent(code, objet, gestionnaireRetour);
+        maitreFX.appeler_bd(code, objet, gestionnaireRetour);
     }
 
     private void remplacer_masterSet(ObjetCSA objet) {

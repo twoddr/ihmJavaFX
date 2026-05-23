@@ -19,7 +19,7 @@ public class ListChooserController extends EditorPaneController {
         monObjet = elementBD;
         editeurPersonnel = null;
 
-        envoyer_vers_parent(4, monObjet, new GestionnaireListesFX(listView));
+        appeler_bd(4, monObjet, new GestionnaireListesFX(listView));
 
         Platform.runLater(() -> {
             lblEntete.setText(elementBD.getPublicName());
@@ -36,7 +36,7 @@ public class ListChooserController extends EditorPaneController {
             monObjet = listView.getSelectionModel().getSelectedItem();
             // seul les objest sont importants; c'est le maitreFX qui saura quoi en faire
             List<ObjetCSA> selections = listView.getSelectionModel().getSelectedItems();
-            mom.envoyer_vers_parent(-19, selections, null);
+            mom.appeler_bd(-19, selections, null);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
         });

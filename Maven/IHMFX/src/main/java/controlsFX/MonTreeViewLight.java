@@ -144,7 +144,7 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
         affiche_utilisateur("Rafraîchissement en cours...");
 
         // Code 4 = demande de liste des enfants
-        envoyer_vers_parent(4, parent, new RafraichisseurEnfants(parentItem));
+        appeler_bd(4, parent, new RafraichisseurEnfants(parentItem));
     }
 
     private ImageView createIcon(String path) {
@@ -168,7 +168,7 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 // Code 3 = Suppression
-                envoyer_vers_parent(3, objet, new GestionnaireRetour() {
+                appeler_bd(3, objet, new GestionnaireRetour() {
                     @Override
                     public void traitementRetour(ArrayList arrayList) {
                         if (!arrayList.isEmpty() && arrayList.get(0) instanceof Integer) {
@@ -340,9 +340,9 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
     // ============ Implémentation MaitreFX ============
 
     @Override
-    public void envoyer_vers_parent(int code, Object objet, GestionnaireRetour gestionnaire) {
+    public void appeler_bd(int code, Object objet, GestionnaireRetour gestionnaire) {
         if (maitre != null) {
-            maitre.envoyer_vers_parent(code, objet, gestionnaire);
+            maitre.appeler_bd(code, objet, gestionnaire);
         }
     }
 
@@ -410,7 +410,7 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
 
         try {
             ObjetCSA instance = type.getDeclaredConstructor().newInstance();
-            maitre.envoyer_vers_parent(4, instance, new GestionnaireRetour() {
+            maitre.appeler_bd(4, instance, new GestionnaireRetour() {
                 @Override
                 public void traitementRetour(ArrayList arrayList) {
                     Platform.runLater(() -> {
