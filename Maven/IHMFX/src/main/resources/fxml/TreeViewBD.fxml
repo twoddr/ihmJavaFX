@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<fx:root xmlns:fx="http://javafx.com/fxml" type="BorderPane" xmlns="http://javafx.com/javafx/">
+    <center>
+        <TreeTableView fx:id="tableau" onMouseClicked="#action_clic_liste" prefHeight="400.0">
+            <columns>
+                <TreeTableColumn prefWidth="75.0" text="Column X"/>
+                <TreeTableColumn prefWidth="75.0" text="Column X"/>
+            </columns>
+        </TreeTableView>
+    </center>
+    <top>
+        <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="lblEntete" text="Entete">
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                    <font>
+                        <Font name="System Bold" size="15.0"/>
+                    </font>
+                </Label>
+                <Separator prefWidth="200.0"/>
+                <HBox alignment="CENTER" spacing="20.0">
+                    <children>
+                        <Button fx:id="btnRafraichir" layoutX="268.0" layoutY="15.0" mnemonicParsing="false"
+                                onAction="#action_rafraichir" prefHeight="13.0" prefWidth="17.0">
+                            <graphic>
+                                <ImageView fitHeight="20.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/refresh.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Region prefWidth="200.0"/>
+                        <Label fx:id="lblSousTitre" prefWidth="250.0" text="---"/>
+                        <Region HBox.hgrow="SOMETIMES"/>
+                        <Button fx:id="btnNouveau" mnemonicParsing="false" onAction="#action_nouveau" prefHeight="6.0"
+                                prefWidth="29.0">
+                            <graphic>
+                                <ImageView fitHeight="24.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/add.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnModifier" disable="true" layoutX="1153.0" layoutY="15.0"
+                                mnemonicParsing="false" onAction="#action_modifier" prefHeight="6.0" prefWidth="29.0">
+                            <graphic>
+                                <ImageView fitHeight="24.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/edit.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnDupliquer" disable="true" layoutX="1153.0" layoutY="15.0"
+                                mnemonicParsing="false" onAction="#action_dupliquer" prefHeight="6.0" prefWidth="29.0">
+                            <graphic>
+                                <ImageView fitHeight="24.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/copy.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnSupprimer" disable="true" layoutX="1153.0" layoutY="15.0"
+                                mnemonicParsing="false" onAction="#action_supprimer" prefHeight="6.0" prefWidth="29.0">
+                            <graphic>
+                                <ImageView fitHeight="24.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/trash.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Separator fx:id="separateur" orientation="VERTICAL" visible="false"/>
+                        <Button fx:id="btnSpecial" disable="true" layoutX="1153.0" layoutY="15.0"
+                                mnemonicParsing="false" prefHeight="6.0" prefWidth="29.0" visible="false">
+                            <graphic>
+                                <ImageView fitHeight="24.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/question.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+</fx:root>

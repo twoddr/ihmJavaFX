@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<fx:root xmlns:fx="http://javafx.com/fxml" type="BorderPane" xmlns="http://javafx.com/javafx/">
+    <center>
+        <BorderPane fx:id="centerPane" VBox.vgrow="ALWAYS">
+        </BorderPane>
+    </center>
+    <top>
+        <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <Label fx:id="lblEntete" text="Entete">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding>
+                <font>
+                    <Font name="System Bold" size="13.0" />
+                </font>
+            </Label>
+            <Separator />
+            <HBox spacing="20.0">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding>
+                <Label fx:id="lblCommentaire" text="Commentaires"
+                    textFill="#1005e2" maxWidth="1.7976931348623157E308" wrapText="true">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnEnregistrer" mnemonicParsing="false"
+                    onAction="#action_enregistrer"
+                    prefHeight="25.0" prefWidth="46.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="22.0" pickOnBounds="true"
+                            preserveRatio="true">
+                            <image>
+                                <Image url="@/images/ok.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="btnRafraichir" layoutX="693.0" layoutY="15.0" mnemonicParsing="false"
+                    onAction="#action_rafraichir" prefHeight="25.0" prefWidth="46.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="22.0" pickOnBounds="true"
+                            preserveRatio="true">
+                            <image>
+                                <Image url="@/images/refresh.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="btnEffacer" mnemonicParsing="false" onAction="#action_effacer"
+                    prefHeight="25.0"
+                    prefWidth="46.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="22.0" pickOnBounds="true"
+                            preserveRatio="true">
+                            <image>
+                                <Image url="@/images/sweep.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="btnAnnuler" mnemonicParsing="false" onAction="#action_annuler"
+                    prefHeight="25.0"
+                    prefWidth="46.0">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="22.0" pickOnBounds="true"
+                            preserveRatio="true">
+                            <image>
+                                <Image url="@/images/delete.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+    </padding>
+</fx:root>

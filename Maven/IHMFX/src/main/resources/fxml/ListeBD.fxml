@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1" spacing="10.0" type="VBox" VBox.vgrow="ALWAYS"
+         xmlns="http://javafx.com/javafx/17.0.12">
+    <HBox fx:id="ligneBoutons" alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+
+        <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+        </VBox.margin>
+        <Button fx:id="btnNouveau" minWidth="-Infinity" mnemonicParsing="false" onAction="#action_nouveau"
+                text="Nouveau"/>
+        <Button fx:id="btnEnregistrer" minWidth="-Infinity" mnemonicParsing="false" onAction="#action_enregistrer"
+                text="Enregistrer"/>
+        <Button fx:id="btnSupprimer" disable="true" minWidth="-Infinity" mnemonicParsing="false"
+                onAction="#action_supprimer" text="Supprimer"/>
+        <Button fx:id="btnDupliquer" disable="true" minWidth="-Infinity" mnemonicParsing="false"
+                onAction="#action_dupliquer" text="Dupliquer"/>
+    </HBox>
+
+    <HBox fx:id="ligneFiltre" alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+        </padding>
+        <Label minWidth="-Infinity" text="Filtre :"/>
+        <TextField fx:id="tfFiltre" onKeyReleased="#action_filtrer" prefWidth="200.0"
+                   promptText="Tapez ici pour filtrer la liste"/>
+        <Button fx:id="btnEffacer" mnemonicParsing="false" onAction="#action_vider_textField" text="x"/>
+    </HBox>
+    <ListView fx:id="liste" onMouseReleased="#action_clic_liste" VBox.vgrow="ALWAYS">
+    </ListView>
+
+    <HBox fx:id="ligneRafraichir" alignment="CENTER" spacing="20.0" VBox.vgrow="NEVER">
+        <HBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </HBox.margin>
+        <Button fx:id="btnRafraichir" minWidth="-Infinity" mnemonicParsing="false" onAction="#action_rafraichir"
+                text="Rafraichir liste"/>
+        <padding>
+            <Insets bottom="5.0" top="5.0"/>
+        </padding>
+    </HBox>
+</fx:root>

@@ -175,6 +175,34 @@ public class FenetreGlissante<T> {
     }
 
     /**
+     * Ajoute un élément à la fin de la liste totale et étend la fenêtre visible si on est déjà au bout.
+     *
+     * @param element l'élément à ajouter
+     */
+    public void ajouterElement(T element) {
+        listeTotale.add(element);
+        // Si on était en fin de liste (indexFin == ancien size), étendre pour inclure le nouvel élément
+        if (indexFin >= listeTotale.size() - 1) {
+            indexFin = listeTotale.size();
+        }
+    }
+
+    /**
+     * Supprime un élément de la liste totale et ajuste la fenêtre si nécessaire.
+     *
+     * @param element l'élément à supprimer
+     */
+    public void supprimerElement(T element) {
+        int idx = listeTotale.indexOf(element);
+        if (idx < 0) return;
+        listeTotale.remove(idx);
+        // Ajuster indexFin si nécessaire
+        if (indexFin > listeTotale.size()) {
+            indexFin = listeTotale.size();
+        }
+    }
+
+    /**
      * Retourne des infos de debug
      *
      * @return informations de déboguage sur les tailles de fenetre et de liste

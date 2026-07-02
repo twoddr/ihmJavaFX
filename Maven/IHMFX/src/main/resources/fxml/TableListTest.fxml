@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import controlsFX.ListTableBDController?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<fx:root xmlns:fx="http://javafx.com/fxml" type="BorderPane" maxHeight="-Infinity" maxWidth="-Infinity"
+         minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0"
+         prefWidth="700.0" xmlns="http://javafx.com/javafx/">
+    <top>
+        <Label text="Test de la liste tableau" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+            </padding>
+        </Label>
+    </top>
+    <center>
+        <ListTableBDController fx:id="listTable" prefWidth="150.0" BorderPane.alignment="CENTER"/>
+    </center>
+    <bottom>
+        <Label text="Commentaires" fx:id="lblCommentaires" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+            </padding>
+        </Label>
+    </bottom>
+</fx:root>

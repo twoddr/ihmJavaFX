@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<fx:root xmlns:fx="http://javafx.com/fxml" alignment="CENTER" hgap="5.0" type="GridPane" vgap="5.0"
+         xmlns="http://javafx.com/javafx">
+    <columnConstraints>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <Label text="Lun" GridPane.columnIndex="1"/>
+        <Label layoutX="10.0" layoutY="35.0" text="Mar" GridPane.columnIndex="2"/>
+        <Label layoutX="94.0" layoutY="35.0" text="Mer" GridPane.columnIndex="3"/>
+        <Label layoutX="178.0" layoutY="35.0" text="Jeu" GridPane.columnIndex="4"/>
+        <Label layoutX="262.0" layoutY="35.0" text="Ven" GridPane.columnIndex="5"/>
+        <Label layoutX="346.0" layoutY="35.0" text="Sam" GridPane.columnIndex="6"/>
+        <Label layoutX="430.0" layoutY="35.0" text="Dim" GridPane.columnIndex="7"/>
+        <Label fx:id="lbl1" text="1" GridPane.rowIndex="1"/>
+        <Label fx:id="lbl2" layoutX="66.0" layoutY="60.0" text="2" GridPane.rowIndex="2"/>
+        <Label fx:id="lbl3" layoutX="66.0" layoutY="93.0" text="3" GridPane.rowIndex="3"/>
+        <Label fx:id="lbl4" layoutX="66.0" layoutY="128.0" text="4" GridPane.rowIndex="4"/>
+        <Label fx:id="lbl5" layoutX="66.0" layoutY="163.0" text="5" GridPane.rowIndex="5"/>
+        <Label fx:id="lbl6" layoutX="20.0" layoutY="198.0" text="6" GridPane.rowIndex="6"/>
+        <StackPane fx:id="s01" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <children>
+                <Rectangle fx:id="r01" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t01" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s02" layoutX="33.0" layoutY="55.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <children>
+                <Rectangle fx:id="r02" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t02" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s03" layoutX="98.0" layoutY="55.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <children>
+                <Rectangle fx:id="r03" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t03" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s07" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="7" GridPane.rowIndex="1">
+            <children>
+                <Rectangle fx:id="r07" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t07" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s06" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="6" GridPane.rowIndex="1">
+            <children>
+                <Rectangle fx:id="r06" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t06" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s05" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="5" GridPane.rowIndex="1">
+            <children>
+                <Rectangle fx:id="r05" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t05" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s04" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
+            <children>
+                <Rectangle fx:id="r04" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t04" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s11" layoutX="358.0" layoutY="55.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <children>
+                <Rectangle fx:id="r11" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t11" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s13" layoutX="423.0" layoutY="55.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+            <children>
+                <Rectangle fx:id="r13" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t13" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s12" layoutX="98.0" layoutY="55.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <children>
+                <Rectangle fx:id="r12" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t12" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s14" layoutX="293.0" layoutY="55.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+            <children>
+                <Rectangle fx:id="r14" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t14" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s15" layoutX="33.0" layoutY="55.0" GridPane.columnIndex="5" GridPane.rowIndex="2">
+            <children>
+                <Rectangle fx:id="r15" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t15" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s16" layoutX="163.0" layoutY="55.0" GridPane.columnIndex="6" GridPane.rowIndex="2">
+            <children>
+                <Rectangle fx:id="r16" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t16" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s17" layoutX="228.0" layoutY="55.0" GridPane.columnIndex="7" GridPane.rowIndex="2">
+            <children>
+                <Rectangle fx:id="r17" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t17" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s21" layoutX="293.0" layoutY="90.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <children>
+                <Rectangle fx:id="r21" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t21" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s22" layoutX="423.0" layoutY="55.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+            <children>
+                <Rectangle fx:id="r22" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t22" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s23" layoutX="228.0" layoutY="90.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
+            <children>
+                <Rectangle fx:id="r23" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t23" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s24" layoutX="163.0" layoutY="55.0" GridPane.columnIndex="4" GridPane.rowIndex="3">
+            <children>
+                <Rectangle fx:id="r24" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t24" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s25" layoutX="228.0" layoutY="55.0" GridPane.columnIndex="5" GridPane.rowIndex="3">
+            <children>
+                <Rectangle fx:id="r25" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t25" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s26" layoutX="98.0" layoutY="90.0" GridPane.columnIndex="6" GridPane.rowIndex="3">
+            <children>
+                <Rectangle fx:id="r26" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t26" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s27" layoutX="163.0" layoutY="90.0" GridPane.columnIndex="7" GridPane.rowIndex="3">
+            <children>
+                <Rectangle fx:id="r27" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t27" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s31" layoutX="358.0" layoutY="55.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <children>
+                <Rectangle fx:id="r31" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t31" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s32" layoutX="358.0" layoutY="90.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <children>
+                <Rectangle fx:id="r32" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t32" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s33" layoutX="98.0" layoutY="55.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
+            <children>
+                <Rectangle fx:id="r33" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t33" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s34" layoutX="423.0" layoutY="90.0" GridPane.columnIndex="4" GridPane.rowIndex="4">
+            <children>
+                <Rectangle fx:id="r34" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t34" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s35" layoutX="293.0" layoutY="55.0" GridPane.columnIndex="5" GridPane.rowIndex="4">
+            <children>
+                <Rectangle fx:id="r35" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t35" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s36" layoutX="33.0" layoutY="55.0" GridPane.columnIndex="6" GridPane.rowIndex="4">
+            <children>
+                <Rectangle fx:id="r36" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t36" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s37" layoutX="33.0" layoutY="90.0" GridPane.columnIndex="7" GridPane.rowIndex="4">
+            <children>
+                <Rectangle fx:id="r37" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t37" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s41" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <children>
+                <Rectangle fx:id="r41" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t41" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s42" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+            <children>
+                <Rectangle fx:id="r42" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t42" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s43" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
+            <children>
+                <Rectangle fx:id="r43" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t43" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s44" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="4" GridPane.rowIndex="5">
+            <children>
+                <Rectangle fx:id="r44" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t44" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s45" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="5" GridPane.rowIndex="5">
+            <children>
+                <Rectangle fx:id="r45" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t45" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s46" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="6" GridPane.rowIndex="5">
+            <children>
+                <Rectangle fx:id="r46" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t46" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s47" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="7" GridPane.rowIndex="5">
+            <children>
+                <Rectangle fx:id="r47" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t47" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s51" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <children>
+                <Rectangle fx:id="r51" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t51" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s52" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
+            <children>
+                <Rectangle fx:id="r52" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t52" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s53" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="3" GridPane.rowIndex="6">
+            <children>
+                <Rectangle fx:id="r53" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t53" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s54" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="4" GridPane.rowIndex="6">
+            <children>
+                <Rectangle fx:id="r54" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t54" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s55" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="5" GridPane.rowIndex="6">
+            <children>
+                <Rectangle fx:id="r55" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t55" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s56" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="6" GridPane.rowIndex="6">
+            <children>
+                <Rectangle fx:id="r56" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t56" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+        <StackPane fx:id="s57" layoutX="20.0" layoutY="20.0" GridPane.columnIndex="7" GridPane.rowIndex="6">
+            <children>
+                <Rectangle fx:id="r57" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="30.0" stroke="BLACK"
+                           strokeType="INSIDE" width="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Text fx:id="t57" strokeType="OUTSIDE" strokeWidth="0.0" text="?"/>
+            </children>
+        </StackPane>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
+</fx:root>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.HBox?>
+<fx:root xmlns:fx="http://javafx.com/fxml" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+         minHeight="-Infinity"
+         minWidth="-Infinity" spacing="15.0" type="HBox"
+         xmlns="http://javafx.com/javafx">
+    <children>
+        <Spinner fx:id="spnHeure" prefWidth="80.0"/>
+        <Label text=":"/>
+        <Spinner fx:id="spnMinutes" editable="true" prefWidth="80.0"/>
+    </children>
+    <padding>
+        <Insets bottom="5.0" top="5.0"/>
+    </padding>
+</fx:root>

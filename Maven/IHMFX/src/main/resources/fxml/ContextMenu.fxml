@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<fx:root xmlns:fx="http://javafx.com/fxml" type="ContextMenu" xmlns="http://javafx.com/javafx">
+    <items>
+        <MenuItem fx:id="menuNouveau" mnemonicParsing="false" onAction="#action_menu_nouveau" text="Nouveau..."/>
+        <MenuItem fx:id="menuEditer" mnemonicParsing="false" onAction="#action_menu_editer" text="Editer..."/>
+        <MenuItem fx:id="menuDupliquer" mnemonicParsing="false" onAction="#action_dupliquer" text="Dupliquer"/>
+        <SeparatorMenuItem/>
+        <MenuItem fx:id="menuSelectionnerTout" mnemonicParsing="false" onAction="#action_menu_selectionner_tout"
+                  text="Sélectionner tout"/>
+        <SeparatorMenuItem/>
+        <MenuItem fx:id="menuCopier" mnemonicParsing="false" onAction="#action_menu_copier"
+                  text="Copier"/>
+        <MenuItem fx:id="menuCouper" mnemonicParsing="false" onAction="#action_menu_couper"
+                  text="Couper"/>
+        <SeparatorMenuItem/>
+        <MenuItem fx:id="menuColler" mnemonicParsing="false" onAction="#action_menu_coller"
+                  text="Coller"/>
+        <SeparatorMenuItem/>
+        <MenuItem fx:id="menuSupprimer" mnemonicParsing="false" onAction="#action_supprimer" text="Supprimer"/>
+    </items>
+</fx:root>

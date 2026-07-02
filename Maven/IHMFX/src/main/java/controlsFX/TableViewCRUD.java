@@ -23,12 +23,15 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Composant tableau CRUD embarqué dans un EditorPane, gérant une liste de sous-objets en mémoire.
+ * Composant tableau CRUD embarqué dans un EditorPane, gérant une liste de
+ * sous-objets en mémoire.
  * <p>
  * Supporte deux modes de configuration :
  * <ul>
- *   <li><b>Ancien mode</b> : {@code new TableViewCRUD(maitreFX)} — propagation via l'interface MaitreFX</li>
- *   <li><b>Nouveau mode</b> : {@code new TableViewCRUD()} + {@link #setContexte(ContexteFX)} — handlers fonctionnels</li>
+ * <li><b>Ancien mode</b> : {@code new TableViewCRUD(maitreFX)} — propagation
+ * via l'interface MaitreFX</li>
+ * <li><b>Nouveau mode</b> : {@code new TableViewCRUD()} +
+ * {@link #setContexte(ContexteFX)} — handlers fonctionnels</li>
  * </ul>
  * Les handlers fonctionnels ont toujours la priorité sur le MaitreFX.
  */
@@ -40,9 +43,11 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
     private final TableView<ObjetIHM> tableView = new TableView<>();
 
     /**
-     * Parent MaitreFX (système déprécié). Utilisé comme fallback quand les handlers ne sont pas configurés.
+     * Parent MaitreFX (système déprécié). Utilisé comme fallback quand les handlers
+     * ne sont pas configurés.
      *
-     * @deprecated Utiliser {@link #setContexte(ContexteFX)} ou les setters individuels.
+     * @deprecated Utiliser {@link #setContexte(ContexteFX)} ou les setters
+     *             individuels.
      */
     @Deprecated
     private final MaitreFX maitreFX;
@@ -79,7 +84,8 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
      * Constructeur historique avec MaitreFX.
      *
      * @param maitre le MaitreFX parent (peut être null si on utilise setContexte())
-     * @deprecated Préférer {@link #TableViewCRUD()} + {@link #setContexte(ContexteFX)}.
+     * @deprecated Préférer {@link #TableViewCRUD()} +
+     *             {@link #setContexte(ContexteFX)}.
      */
     @Deprecated
     public TableViewCRUD(MaitreFX maitre) {
@@ -128,7 +134,15 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
             });
             return row;
         });
-        generateurColonnes = new GenerateurColonnesTableView(tableView, this);
+        generateurColonnes = new GenerateurColonnesTableView(tableView,
+                string -> {
+                    if (messageHandler != null) {
+                        messageHandler.accept(string);
+                    }
+                },
+                (selection, nomColonne) -> {
+                    action_utilisateur(selection, buttonBox, nomColonne);
+                });
         setCenter(tableView);
         setTop(buttonBox);
     }
@@ -152,7 +166,8 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
     }
 
     /**
-     * Définit le callback de résolution de type (remplace {@code getElementFromType}).
+     * Définit le callback de résolution de type (remplace
+     * {@code getElementFromType}).
      */
     public void setTypeResolver(Function<String, ObjetCSA> resolver) {
         this.typeResolver = resolver;
@@ -167,17 +182,24 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
 
     /**
      * Configure tous les handlers en une seule fois depuis un {@link ContexteFX}.
-     * Le contexte est mémorisé et propagé automatiquement à l'EditorPane enfant ouvert via "Ajouter/Modifier".
+     * Le contexte est mémorisé et propagé automatiquement à l'EditorPane enfant
+     * ouvert via "Ajouter/Modifier".
      *
-     * @param ctx le contexte à appliquer (les champs null ne remplacent pas les handlers existants)
+     * @param ctx le contexte à appliquer (les champs null ne remplacent pas les
+     *            handlers existants)
      */
     public void setContexte(ContexteFX ctx) {
         this.contexte = ctx;
-        if (ctx == null) return;
-        if (ctx.getMessageHandler() != null) this.messageHandler = ctx.getMessageHandler();
-        if (ctx.getConsoleHandler() != null) this.consoleHandler = ctx.getConsoleHandler();
-        if (ctx.getTypeResolver() != null) this.typeResolver = ctx.getTypeResolver();
-        if (ctx.getUserActionHandler() != null) this.userActionHandler = ctx.getUserActionHandler();
+        if (ctx == null)
+            return;
+        if (ctx.getMessageHandler() != null)
+            this.messageHandler = ctx.getMessageHandler();
+        if (ctx.getConsoleHandler() != null)
+            this.consoleHandler = ctx.getConsoleHandler();
+        if (ctx.getTypeResolver() != null)
+            this.typeResolver = ctx.getTypeResolver();
+        if (ctx.getUserActionHandler() != null)
+            this.userActionHandler = ctx.getUserActionHandler();
     }
 
     // -------------------------------------------------------------------------
@@ -248,8 +270,9 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
             affiche_utilisateur("Aucune possibilité de gérer les éléments affichés ici");
             return;
         }
-        String heritedPath = (maitreFX instanceof EditorPaneController) ?
-                ((EditorPaneController) maitreFX).getEditorPath() : "";
+        String heritedPath = (maitreFX instanceof EditorPaneController)
+                ? ((EditorPaneController) maitreFX).getEditorPath()
+                : "";
         String myObject = elementDeReference.getType();
         String fullPath = heritedPath.isEmpty() ? myObject : heritedPath + "." + myObject;
 
@@ -257,9 +280,11 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
                 objetCSA.getObjetRacine(), this, null, fullPath);
 
         // Propager le contexte vers l'EditorPane enfant
-        if (contexte != null) editorPaneController.setContexte(contexte);
+        if (contexte != null)
+            editorPaneController.setContexte(contexte);
 
-        // L'EditorPane notifie via envoyer_vers_parent (MaitreFX) → géré dans notre implémentation ci-dessous
+        // L'EditorPane notifie via envoyer_vers_parent (MaitreFX) → géré dans notre
+        // implémentation ci-dessous
     }
 
     private void deleteSelectedItem() {
@@ -294,7 +319,8 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
 
     /**
      * Reçoit les notifications des enfants (EditorPane). Gère localement les objets
-     * du même type que {@code elementDeReference}, remonte les autres vers le parent.
+     * du même type que {@code elementDeReference}, remonte les autres vers le
+     * parent.
      */
     @Override
     public void appeler_bd(int code, Object objet, GestionnaireRetour gestionnaireRetour) {
@@ -341,7 +367,8 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
 
     private void remonter_vers_parent(int code, Object objet, GestionnaireRetour gestionnaireRetour) {
         if (maitreFX == null) {
-            affiche_console("TableViewCRUD/remonter_vers_parent : pas de maitreFX, appel ignoré : " + code + " - " + objet);
+            affiche_console(
+                    "TableViewCRUD/remonter_vers_parent : pas de maitreFX, appel ignoré : " + code + " - " + objet);
             return;
         }
         affiche_console("* Le tableviewCRUD envoie l'info " + code + " - " + objet + " vers son parent " + maitreFX);
@@ -454,7 +481,6 @@ public class TableViewCRUD extends BorderPane implements MaitreFX {
         }
         editorPaneController.rafraichir_listes();
     }
-
 
     public ObjetCSA getElementDeReference() {
         if (elementDeReference == null && !tableItems.isEmpty()) {

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import controlsFX.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/8"
+            fx:controller="mainIHMFX.TestFX">
+    <TabPane layoutX="92.0" layoutY="40.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="5.0"
+             AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0"
+    fx:id="tabPane">
+        <Tab text="Liste et combo filtrables">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <VBox layoutX="64.0" layoutY="50.0" spacing="20.0" AnchorPane.bottomAnchor="5.0"
+                      AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+                      AnchorPane.topAnchor="5.0">
+                    <ComboFiltrableController fx:id="comboFiltrable"/>
+                    <Pane fx:id="panComboEditable"/>
+                    <ListeFiltrableController fx:id="listeFiltrable"/>
+                    <DoubleListeController fx:id="doubleListe"/>
+                </VBox>
+            </AnchorPane>
+        </Tab>
+        <Tab text="Liste BD">
+            <ListeBDController fx:id="listeBD"/>
+        </Tab>
+        <Tab text="TreeView BD">
+            <TreeViewBDController fx:id="treeViewBD"/>
+        </Tab>
+        <Tab text="Table BD">
+            <ListTableBDController fx:id="listeTableBD"/>
+        </Tab>
+        <Tab text="Agenda" fx:id="tabAgenda">
+        </Tab>
+        <Tab text="TreeCheck">
+            <TreeCheckBoxListController fx:id="treeCheckList"/>
+        </Tab>
+        <Tab text="TreeViewPlus">
+            <TreeViewPlus fx:id="treeViewPlus"/>
+        </Tab>
+        <Tab text="ConsoleLog">
+            <LogController fx:id="logController"/>
+        </Tab>
+        <Tab text="Date TextField">
+            <DateBoxController fx:id="dateBox"/>
+        </Tab>
+        <Tab text="EditorPane">
+            <EditorPaneController fx:id="editorPane"/>
+        </Tab>
+        <Tab text="TableViewCRUD">
+            <BorderPane fx:id="tableViewCRUDBorderPane"/>
+        </Tab>
+    </TabPane>
+</AnchorPane>

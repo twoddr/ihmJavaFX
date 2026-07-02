@@ -1,0 +1,189 @@
+﻿/* Fond racine principal */
+.root,
+.main-root {
+    -fx-background-color: rgb(40, 80, 170);
+    -fx-text-fill: darkblue;
+}
+
+/* ❌ SUPPRIMÉ - Ne pas utiliser * */
+/* Appliquez les radius individuellement aux composants qui en ont besoin */
+
+/* CORRECTION SIMPLE POUR LES TABS */
+.tab {
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 6px 6px 0 0; /* Coins arrondis uniquement en haut */
+}
+
+.tab .tab-label {
+    -fx-padding: 4px 0;
+}
+
+/* Style global des labels */
+.label {
+    -fx-text-fill: darkblue;
+    -fx-font-size: 1em;
+    -fx-padding: 0.5em;
+}
+
+/* Style global des boutons */
+.button {
+    -fx-background-color: rgb(210, 210, 210);
+    -fx-text-fill: darkred;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 0.75em 1.2em;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: rgb(67, 107, 149);
+    -fx-text-fill: white;
+}
+
+.button:pressed {
+    -fx-background-color: rgb(50, 80, 120);
+}
+
+/* Tooltips modernes */
+.tooltip {
+    -fx-background-color: rgba(30, 30, 30, 0.9);
+    -fx-text-fill: white; /* ← Changé de darkblue à white pour lisibilité */
+    -fx-background-radius: 6px;
+    -fx-padding: 0.667em 0.75em;
+    -fx-font-size: 0.85em;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0.0, 0, 3);
+}
+
+/* Panneaux / conteneurs généraux */
+.panel,
+.panneau-collection,
+.fenetre-principale {
+    -fx-background-color: rgb(0, 35, 102);
+    -fx-background-radius: 6px;
+    -fx-padding: 16px;
+    -fx-border-radius: 6px;
+    -fx-border-width: 1px;
+    -fx-border-color: transparent;
+}
+
+.panel:hover,
+.panneau-collection:hover {
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Fenêtre principale */
+#fenetrePrincipale {
+    -fx-min-width: 300px;
+    -fx-padding: 16px;
+}
+
+/* Texte d'information */
+.information {
+    -fx-text-fill: white;
+    -fx-background-color: rgb(0, 35, 102);
+    -fx-padding: 0.75em;
+    -fx-background-radius: 6px;
+}
+
+.erreur {
+    -fx-text-fill: white;
+    -fx-background-color: darkred;
+    -fx-padding: 0.75em;
+    -fx-background-radius: 6px;
+}
+
+/* Zone de recherche */
+.search {
+    -fx-min-width: 480px;
+    -fx-max-width: 480px;
+}
+
+/* Style texte */
+.auteur {
+    -fx-font-size: 14pt;
+    -fx-font-weight: bold;
+}
+
+.bd {
+    -fx-font-size: 10pt;
+    -fx-padding: 0 0 0 1em;
+}
+
+/* TextField et TextArea */
+.text-field, .text-area {
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+}
+
+/* CheckBox - pas de radius sur la box elle-même */
+.check-box {
+    -fx-padding: 0.5em;
+}
+/* Styles pour les boutons du TreeView */
+.tree-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 2;
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+    -fx-max-width: 20px;
+    -fx-max-height: 20px;
+    -fx-cursor: hand;
+}
+
+.tree-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+    -fx-background-radius: 3;
+}
+
+.tree-button:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Pour masquer les boutons quand la cellule n'est pas survolée */
+.tree-cell:hover .tree-button {
+    -fx-opacity: 1;
+}
+
+.tree-cell .tree-button {
+    -fx-opacity: 0.3;
+}
+
+/* --- NOUVEAU : style pour le bouton Supprimer (danger) --- */
+.tree-button-danger {
+    -fx-background-color: linear-gradient(#ffc9c9, #ff6b6b);
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 2;
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+    -fx-max-width: 20px;
+    -fx-max-height: 20px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(200,0,0,0.25), 6, 0, 0, 1);
+}
+
+.tree-button-danger:hover {
+    -fx-background-color: linear-gradient(#ff9b9b, #ff4c4c);
+}
+
+.tree-button-danger:pressed {
+    -fx-background-color: linear-gradient(#ff7b7b, #e63939);
+}
+
+/* Conserver le même comportement d'opacité que pour .tree-button */
+.tree-cell:hover .tree-button-danger {
+    -fx-opacity: 1;
+}
+
+.tree-cell .tree-button-danger {
+    -fx-opacity: 0.3;
+}

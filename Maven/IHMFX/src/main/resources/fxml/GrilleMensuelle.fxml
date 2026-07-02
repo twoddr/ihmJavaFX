@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<fx:root xmlns:fx="http://javafx.com/fxml" type="BorderPane" xmlns="http://javafx.com/javafx">
+    <center>
+        <GridPane alignment="CENTER" hgap="5.0" vgap="5.0">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <Label text="Lun" GridPane.columnIndex="1"/>
+                <Label layoutX="10.0" layoutY="35.0" text="Mar" GridPane.columnIndex="2"/>
+                <Label layoutX="94.0" layoutY="35.0" text="Mer" GridPane.columnIndex="3"/>
+                <Label layoutX="178.0" layoutY="35.0" text="Jeu" GridPane.columnIndex="4"/>
+                <Label layoutX="262.0" layoutY="35.0" text="Ven" GridPane.columnIndex="5"/>
+                <Label layoutX="346.0" layoutY="35.0" text="Sam" GridPane.columnIndex="6"/>
+                <Label layoutX="430.0" layoutY="35.0" text="Dim" GridPane.columnIndex="7"/>
+                <ToggleButton fx:id="tb01" minWidth="-Infinity" mnemonicParsing="false" onAction="#action_toggle"
+                              text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES"
+                              GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb15" layoutX="32.0" layoutY="95.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="3" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb02" layoutX="45.0" layoutY="50.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb03" layoutX="120.0" layoutY="50.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="3" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb04" layoutX="225.0" layoutY="50.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="4" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb05" layoutX="330.0" layoutY="50.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="5" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb06" layoutX="435.0" layoutY="50.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="6" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb07" layoutX="540.0" layoutY="50.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="7" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb08" layoutX="45.0" layoutY="50.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb09" layoutX="15.0" layoutY="83.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb10" layoutX="120.0" layoutY="83.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="3" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb11" layoutX="225.0" layoutY="83.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="4" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb12" layoutX="330.0" layoutY="83.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="5" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb13" layoutX="435.0" layoutY="83.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="6" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb14" layoutX="540.0" layoutY="83.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="7" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb16" layoutX="45.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="3" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb17" layoutX="120.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="3" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="3" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb18" layoutX="225.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="4" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="3" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb19" layoutX="330.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="5" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="3" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb20" layoutX="435.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="6" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="3" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb21" layoutX="540.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="7" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="3" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb22" layoutX="645.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb23" layoutX="15.0" layoutY="153.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb24" layoutX="120.0" layoutY="153.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="3" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb25" layoutX="225.0" layoutY="153.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="4" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb26" layoutX="330.0" layoutY="153.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="5" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb27" layoutX="435.0" layoutY="153.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="6" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb28" layoutX="540.0" layoutY="153.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="7" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb29" layoutX="645.0" layoutY="153.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb30" layoutX="15.0" layoutY="188.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb31" layoutX="120.0" layoutY="188.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="3" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb32" layoutX="225.0" layoutY="188.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="4" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb33" layoutX="330.0" layoutY="188.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="5" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb34" layoutX="435.0" layoutY="188.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="6" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <ToggleButton fx:id="tb35" layoutX="540.0" layoutY="188.0" minWidth="-Infinity" mnemonicParsing="false"
+                              onAction="#action_toggle" text="?" GridPane.columnIndex="7" GridPane.halignment="CENTER"
+                              GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.valignment="CENTER"
+                              GridPane.vgrow="SOMETIMES"/>
+                <Label fx:id="lbl1" text="1" GridPane.rowIndex="1"/>
+                <Label fx:id="lbl2" layoutX="66.0" layoutY="60.0" text="2" GridPane.rowIndex="2"/>
+                <Label fx:id="lbl3" layoutX="66.0" layoutY="93.0" text="3" GridPane.rowIndex="3"/>
+                <Label fx:id="lbl4" layoutX="66.0" layoutY="128.0" text="4" GridPane.rowIndex="4"/>
+                <Label fx:id="lbl5" layoutX="66.0" layoutY="163.0" text="5" GridPane.rowIndex="5"/>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </GridPane>
+    </center>
+    <top>
+        <HBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="lblMoisAnnee" text="Mois Année">
+                    <font>
+                        <Font name="System Bold" size="14.0"/>
+                    </font>
+                </Label>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </HBox>
+    </top>
+</fx:root>

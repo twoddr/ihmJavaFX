@@ -12,6 +12,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
     private final String STRING_VIDE = ConstantesFX.STRING_VIDE;
@@ -20,6 +23,27 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
     private MaitreFX maitre;
     private boolean isExpansionBusy = false;
     private Class<ObjetCSA> type;
+
+    // ---- Handlers fonctionnels (alternative à MaitreFX) ----
+    private ContexteFX contexte;
+    private ContexteFX.HandlerBD bdHandler;
+    private Function<String, ObjetCSA> typeResolver;
+    private BiConsumer<Object, String> userActionHandler;
+    private Consumer<String> messageHandler;
+
+    /**
+     * Constructeur sans argument requis pour l'instanciation depuis FXML.
+     * Après instanciation, appeler {@link #setTypeClassName(String)} pour définir le type racine.
+     */
+    public MonTreeViewLight() {
+        this.type = null;
+        TreeItem<ObjetIHM> root = new TreeItem<>();
+        setRoot(root);
+        setShowRoot(false);
+        configureCellFactory();
+        configureSelectionListener();
+        configureContextMenu();
+    }
 
     public MonTreeViewLight(Class<ObjetCSA> typeRacine) {
         type = Objects.requireNonNull(typeRacine,
@@ -31,6 +55,28 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
         configureCellFactory();
         configureSelectionListener();
         configureContextMenu();
+    }
+
+    /**
+     * Retourne le nom complet de la classe racine, ou {@code null} si non définie.
+     */
+    public String getTypeClassName() {
+        return type != null ? type.getName() : null;
+    }
+
+    /**
+     * Définit la classe racine à partir de son nom complet.
+     * Utilisé pour l'instanciation depuis FXML : {@code <MonTreeViewLight typeClassName="com.example.MaClasse"/>}
+     *
+     * @param className nom complet de la classe (ex: {@code "com.example.MaCategorie"})
+     */
+    @SuppressWarnings("unchecked")
+    public void setTypeClassName(String className) {
+        try {
+            this.type = (Class<ObjetCSA>) Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MonTreeViewLight : classe non trouvée : " + className, e);
+        }
     }
 
     private void configureCellFactory() {
@@ -99,6 +145,10 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
         });
     }
 
+    public Map<ObjetCSA, TreeItem<ObjetIHM>> getItemMap() {
+        return itemMap;
+    }
+
     private void action_ajouter_enfant(TreeItem<ObjetIHM> parentItem) {
         ObjetCSA parent = parentItem.getValue().getObjetCSA();
 
@@ -109,13 +159,13 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
             return;
         }
 
-        if (maitre == null) {
+        if (bdHandler == null && maitre == null) {
             affiche_console("** MaitreFX non défini pour " + this);
             affiche_utilisateur("Impossible d'ajouter un enfant");
             return;
         }
 
-        ObjetCSA reference = maitre.getElementFromType(typeEnfant);
+        ObjetCSA reference = getElementFromType(typeEnfant);
 
         if (reference != null) {
             reference.setParent(parent);
@@ -135,7 +185,7 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
             return;
         }
 
-        if (maitre == null) {
+        if (bdHandler == null && maitre == null) {
             affiche_console("** MaitreFX non défini pour " + this);
             return;
         }
@@ -189,6 +239,10 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
     }
 
     private void prevenir_ecouteur(ObjetCSA selectedItem, MonTreeViewLight monTreeView, String info) {
+        if (userActionHandler != null) {
+            userActionHandler.accept(selectedItem, info);
+            return;
+        }
         if (maitre == null) {
             System.err.println("\n!!!\nMaitreFX non spécifié pour le TreeView " + this);
             return;
@@ -198,6 +252,54 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
 
     public void setMaitre(MaitreFX maitre) {
         this.maitre = maitre;
+    }
+
+    // ============ Handlers fonctionnels (ContexteFX) ============
+
+    /**
+     * Configure tous les handlers en une seule fois depuis un {@link ContexteFX}.
+     *
+     * @param ctx le contexte à appliquer
+     */
+    public void setContexte(ContexteFX ctx) {
+        this.contexte = ctx;
+        if (ctx == null) return;
+        if (ctx.getBdHandler() != null) this.bdHandler = ctx.getBdHandler();
+        if (ctx.getTypeResolver() != null) this.typeResolver = ctx.getTypeResolver();
+        if (ctx.getMessageHandler() != null) this.messageHandler = ctx.getMessageHandler();
+        if (ctx.getUserActionHandler() != null) this.userActionHandler = ctx.getUserActionHandler();
+    }
+
+    public ContexteFX getContexteFX() {
+        return contexte;
+    }
+
+    /**
+     * Configure le handler BD unifié. Codes : 1=ajout, 2=modif, 3=suppression, 4=consultation.
+     */
+    public void setBdHandler(ContexteFX.HandlerBD handler) {
+        this.bdHandler = handler;
+    }
+
+    /**
+     * Configure le résolveur de type (remplace {@code maitre.getElementFromType}).
+     */
+    public void setTypeResolver(Function<String, ObjetCSA> resolver) {
+        this.typeResolver = resolver;
+    }
+
+    /**
+     * Configure le handler d'actions utilisateur.
+     */
+    public void setUserActionHandler(BiConsumer<Object, String> handler) {
+        this.userActionHandler = handler;
+    }
+
+    /**
+     * Configure le handler de messages utilisateur.
+     */
+    public void setMessageHandler(Consumer<String> handler) {
+        this.messageHandler = handler;
     }
 
     public void setData(List<? extends ObjetCSA> objetDis) {
@@ -341,14 +443,22 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
 
     @Override
     public void appeler_bd(int code, Object objet, GestionnaireRetour gestionnaire) {
+        if (bdHandler != null && objet instanceof ObjetCSA objetCSA) {
+            bdHandler.execute(code, objetCSA, liste -> gestionnaire.traitementRetour(new ArrayList<>(liste)));
+            return;
+        }
         if (maitre != null) {
             maitre.appeler_bd(code, objet, gestionnaire);
+            return;
         }
+        affiche_console("** Attention : MonTreeViewLight n'a pas de parent ni de bdHandler pour code=" + code);
     }
 
     @Override
     public void affiche_utilisateur(String texte) {
-        if (maitre != null) {
+        if (messageHandler != null) {
+            messageHandler.accept(texte);
+        } else if (maitre != null) {
             maitre.affiche_utilisateur(texte);
         }
     }
@@ -364,6 +474,9 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
 
     @Override
     public ObjetCSA getElementFromType(String type) {
+        if (typeResolver != null) {
+            return typeResolver.apply(type);
+        }
         if (maitre != null) {
             return maitre.getElementFromType(type);
         }
@@ -372,7 +485,9 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
 
     @Override
     public void action_utilisateur(Object selectedItem, Object source, String extraInfo) {
-        if (maitre != null) {
+        if (userActionHandler != null) {
+            userActionHandler.accept(selectedItem, extraInfo);
+        } else if (maitre != null) {
             maitre.action_utilisateur(selectedItem, source, extraInfo);
         }
     }
@@ -402,15 +517,22 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
 
     @Override
     public void rafraichir() {
-        if (maitre == null) {
+        if (bdHandler == null && maitre == null) {
             affiche_utilisateur("Rafraîchissement impossible pour cet élément");
-            affiche_console("Aucun accès à la bd pour cet objet. Il faut initialiser son maitreFX !");
+            affiche_console("Aucun accès à la bd pour cet objet. Il faut initialiser son maitreFX ou bdHandler !");
+            return;
+        }
+
+        if (type == null) {
+            affiche_console("Rafraîchissement impossible : typeClassName non défini. " +
+                    "Appeler setTypeClassName(...) avant rafraichir().");
+            affiche_utilisateur("Type non configuré, rafraîchissement impossible");
             return;
         }
 
         try {
             ObjetCSA instance = type.getDeclaredConstructor().newInstance();
-            maitre.appeler_bd(4, instance, new GestionnaireRetour() {
+            GestionnaireRetour gestionnaire = new GestionnaireRetour() {
                 @Override
                 public void traitementRetour(ArrayList arrayList) {
                     Platform.runLater(() -> {
@@ -423,7 +545,12 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
                         setData(categories);
                     });
                 }
-            });
+            };
+            if (bdHandler != null) {
+                bdHandler.execute(4, instance, liste -> gestionnaire.traitementRetour(new ArrayList<>(liste)));
+            } else {
+                maitre.appeler_bd(4, instance, gestionnaire);
+            }
         } catch (Exception e) {
             affiche_console("Erreur lors du rafraîchissement : " + e.getMessage());
         }

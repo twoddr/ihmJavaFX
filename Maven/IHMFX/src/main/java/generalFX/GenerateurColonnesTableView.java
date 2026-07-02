@@ -29,9 +29,6 @@ import java.util.function.Consumer;
 public class GenerateurColonnesTableView {
     SimpleLogger logger = SimpleLogger.getLogger(GenerateurColonnesTableView.class);
     private TableView<ObjetIHM> tableau;
-    /** @deprecated Utiliser les callbacks {@code consoleLogger} et {@code checkboxHandler} à la place. */
-    @Deprecated
-    private MaitreFX maitreFX;
     private Consumer<String> consoleLogger;
     private BiConsumer<ObjetCSA, String> checkboxHandler;
     private ArrayList<String> listeEltsANePasAfficher = new ArrayList<>();
@@ -39,13 +36,14 @@ public class GenerateurColonnesTableView {
     /**
      * Constructeur sans MaitreFX — approche recommandée.
      *
-     * @param tableView      le TableView à gérer
+     * @param tableView       le TableView à gérer
      * @param consoleLogger   callback pour afficher des messages (peut être null)
-     * @param checkboxHandler callback quand une checkbox est cliquée (item sélectionné, nom colonne)
+     * @param checkboxHandler callback quand une checkbox est cliquée (item
+     *                        sélectionné, nom colonne)
      */
     public GenerateurColonnesTableView(TableView<ObjetIHM> tableView,
-                                       Consumer<String> consoleLogger,
-                                       BiConsumer<ObjetCSA, String> checkboxHandler) {
+            Consumer<String> consoleLogger,
+            BiConsumer<ObjetCSA, String> checkboxHandler) {
         tableau = tableView;
         this.consoleLogger = consoleLogger;
         this.checkboxHandler = checkboxHandler;
@@ -54,8 +52,8 @@ public class GenerateurColonnesTableView {
                 (obs, oldWidth, newWidth) -> adjustColumnWidths(tableau));
 
         // Add listener to adjust column widths when columns are added or removed
-        tableau.getColumns().addListener((ListChangeListener<TableColumn<ObjetIHM, ?>>)
-                change -> adjustColumnWidths(tableau));
+        tableau.getColumns()
+                .addListener((ListChangeListener<TableColumn<ObjetIHM, ?>>) change -> adjustColumnWidths(tableau));
     }
 
     /**
@@ -63,17 +61,6 @@ public class GenerateurColonnesTableView {
      */
     public GenerateurColonnesTableView(TableView<ObjetIHM> tableView) {
         this(tableView, s -> System.err.println("GenerateurColonnes: " + s), null);
-    }
-
-    /**
-     * @deprecated Utiliser {@link #GenerateurColonnesTableView(TableView, Consumer, BiConsumer)} à la place.
-     */
-    @Deprecated
-    public GenerateurColonnesTableView(TableView<ObjetIHM> tableView, MaitreFX mom) {
-        this(tableView,
-                mom != null ? mom::affiche_console : null,
-                mom != null ? (item, col) -> mom.action_utilisateur(item, null, col) : null);
-        this.maitreFX = mom;
     }
 
     private void adjustColumnWidths(TableView<ObjetIHM> tableView) {
@@ -144,8 +131,9 @@ public class GenerateurColonnesTableView {
                     } else if (variable instanceof List) {
                         tableau.getColumns().add(getListTableColumn(nomVariable, nomPublic));
                     } else {
-                        System.err.println("** : type non géré par le tableau pour la variable : " + variable + " et pour la" +
-                                " classe stockée " + classeVariable);
+                        System.err.println(
+                                "** : type non géré par le tableau pour la variable : " + variable + " et pour la" +
+                                        " classe stockée " + classeVariable);
                     }
                 }
             }
@@ -207,7 +195,8 @@ public class GenerateurColonnesTableView {
                 return null;
             }
         });
-        //colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE, tableau.getWidth() / 10));
+        // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
+        // tableau.getWidth() / 10));
         return colonne;
     }
 
@@ -217,9 +206,11 @@ public class GenerateurColonnesTableView {
             // oihm.getValue() returns the ObjetCSA instance for a particular TableView row
             try {
                 ObjetIHM objetIHM = cellDataFeatures.getValue();
-                //System.err.println("DEBUG TableColumn : je tente d'insérer " + objetIHM.getObjetCSA() + " dans la variable " + nomVariable
-                //       + " à la colonne " + titre);
-                //System.err.println("DEBUG TableColumn : getProperty : " + objetIHM.getProperty(nomVariable));
+                // System.err.println("DEBUG TableColumn : je tente d'insérer " +
+                // objetIHM.getObjetCSA() + " dans la variable " + nomVariable
+                // + " à la colonne " + titre);
+                // System.err.println("DEBUG TableColumn : getProperty : " +
+                // objetIHM.getProperty(nomVariable));
                 return (ObservableValue<ObjetCSA>) objetIHM.get(nomVariable);
             } catch (Exception e) {
                 System.err.println("** Explosion dans ListTableBD ! (" + nomVariable + ", " + "String)");
@@ -233,7 +224,8 @@ public class GenerateurColonnesTableView {
                 @Override
                 protected void updateItem(ObjetCSA item, boolean empty) {
                     try {
-                        //System.err.println("DEBUG TableColumn : Item actuel de setCellFactory : " + item);
+                        // System.err.println("DEBUG TableColumn : Item actuel de setCellFactory : " +
+                        // item);
                         super.updateItem(item, empty);
 
                         this.setText(null);
@@ -248,7 +240,8 @@ public class GenerateurColonnesTableView {
                 }
             };
         });
-        //colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE, tableau.getWidth() / 10));
+        // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
+        // tableau.getWidth() / 10));
         return colonne;
     }
 
@@ -259,8 +252,11 @@ public class GenerateurColonnesTableView {
             try {
                 ObjetIHM objetIHM = oihm.getValue();
                 Object property = objetIHM.get(nomVariable);
-                /*System.err.println("DEBUG TableColumn : je tente d'insérer " + objetIHM.getObjetCSA() + " dans la variable " + nomVariable
-                        + " à la colonne " + titre);*/
+                /*
+                 * System.err.println("DEBUG TableColumn : je tente d'insérer " +
+                 * objetIHM.getObjetCSA() + " dans la variable " + nomVariable
+                 * + " à la colonne " + titre);
+                 */
                 if (property != null) {
                     return (ObservableValue<String>) property;
                 }
@@ -292,7 +288,8 @@ public class GenerateurColonnesTableView {
                 }
             };
         });
-        //colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE, tableau.getWidth() / 10));
+        // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
+        // tableau.getWidth() / 10));
         return colonne;
     }
 
@@ -322,12 +319,14 @@ public class GenerateurColonnesTableView {
                                 this.setText("ERROR !");
                                 Color couleur = Color.RED;
                                 rectangle.setFill(couleur);
-                                System.err.println("*** ListeTable : je n'arrive pas à afficher " + "une couleur écrite sous forme d'integer !");
+                                System.err.println("*** ListeTable : je n'arrive pas à afficher "
+                                        + "une couleur écrite sous forme d'integer !");
                             } else {
                                 Color couleur = FX_RGBConverter.convert_rgb_2_color(item);
                                 rectangle.setFill(couleur);
-//                                            System.out.println("\nDEBUG : listTable affiche une couleur " + affiche_couleur(couleur)
-//                                                    + "de valeur entière : " + item);
+                                // System.out.println("\nDEBUG : listTable affiche une couleur " +
+                                // affiche_couleur(couleur)
+                                // + "de valeur entière : " + item);
                             }
                             this.setGraphic(rectangle);
                         }
@@ -335,7 +334,8 @@ public class GenerateurColonnesTableView {
                 };
             });
         }
-        //colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE, tableau.getWidth() / 10));
+        // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
+        // tableau.getWidth() / 10));
         return colonne;
     }
 
@@ -370,7 +370,8 @@ public class GenerateurColonnesTableView {
                 return null;
             }
         });
-        //colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE, tableau.getWidth() / 10));
+        // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
+        // tableau.getWidth() / 10));
         return colonne;
     }
 
@@ -408,7 +409,8 @@ public class GenerateurColonnesTableView {
                 return null;
             }
         });
-        //colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE, tableau.getWidth() / 10));
+        // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
+        // tableau.getWidth() / 10));
         return colonne;
     }
 
@@ -423,7 +425,8 @@ public class GenerateurColonnesTableView {
                 return null;
             }
         });
-        //colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE, tableau.getWidth() / 10));
+        // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
+        // tableau.getWidth() / 10));
         return colonne;
     }
 
@@ -438,9 +441,10 @@ public class GenerateurColonnesTableView {
             ObjetCSA selectedItem = tableau.getSelectionModel().getSelectedItem().getObjetCSA();
             if (checkboxHandler != null) {
                 checkboxHandler.accept(selectedItem, nomColonne);
-            } else if (maitreFX != null) {
-                maitreFX.action_utilisateur(selectedItem, source, nomColonne);
+                return;
             }
+            System.err.println(
+                    "ListTableBD/GenerateurColonnesTableView : action_clic_checkBox : checkboxHandler == null !");
         }
     }
 
@@ -467,12 +471,13 @@ public class GenerateurColonnesTableView {
 
                     if (item != null && !empty) {
                         this.setText(String.valueOf(item).toUpperCase());
-                        //setTextFill(FX_RGBConverter.convert_rgb_2_color(item.));
+                        // setTextFill(FX_RGBConverter.convert_rgb_2_color(item.));
                     }
                 }
             };
         });
-        //colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE, tableau.getWidth() / 10));
+        // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
+        // tableau.getWidth() / 10));
         return colonne;
     }
 }
