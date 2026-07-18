@@ -211,6 +211,7 @@ public class MonTreeView extends TreeView<ObjetIHM> implements MaitreFX {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Suppression de l'objet : " + cible.getNom() + "\nVeuillez confirmer, svp");
         alert.setWidth(600);
         alert.setHeight(400);
+        generalFX.StylesheetsFX.apply(alert, this);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 // Code 3 = suppression

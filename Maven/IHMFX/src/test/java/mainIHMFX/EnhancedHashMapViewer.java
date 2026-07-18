@@ -1,20 +1,33 @@
 package mainIHMFX;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import controlsFX.ComboEditableController;
 import general.GestionnaireImbrications;
 import general.ObjetCSA;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import mainIHMFX.objets.*;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import mainIHMFX.objets.Contact;
+import mainIHMFX.objets.MedecinTraitant;
+import mainIHMFX.objets.Quidam;
+import mainIHMFX.objets.Specialite;
+import mainIHMFX.objets.Voiture;
 
 /*
  ******** DeepSeek suggestion
@@ -82,14 +95,14 @@ public class EnhancedHashMapViewer extends Application {
 
         refreshBtn.setOnAction(e -> {
             formContainer.getChildren().clear();
-            //buildDynamicForm(formContainer, currentData, "Root");
+            // buildDynamicForm(formContainer, currentData, "Root");
             buildCSADynamicForm(formContainer, monObjet);
         });
 
         saveBtn.setOnAction(e -> {
             // Here you would implement saving logic
             System.out.println("Data would be saved here");
-            //showDataSummary(currentData);
+            // showDataSummary(currentData);
             showDataSummary(monObjet);
         });
 
@@ -135,8 +148,7 @@ public class EnhancedHashMapViewer extends Application {
                         HBox simpleItem = new HBox(10);
                         simpleItem.getChildren().addAll(
                                 new Label("Value:"),
-                                createInputField(item, data, key, i)
-                        );
+                                createInputField(item, data, key, i));
                         listAccordion.getPanes().add(new TitledPane("Item " + (i + 1), simpleItem));
                     }
                 }
@@ -144,15 +156,13 @@ public class EnhancedHashMapViewer extends Application {
                 VBox listContainer = new VBox(5);
                 listContainer.getChildren().addAll(
                         new Label(key + " (List):"),
-                        listAccordion
-                );
+                        listAccordion);
                 content.getChildren().add(listContainer);
             } else {
                 HBox fieldRow = new HBox(10);
                 fieldRow.getChildren().addAll(
                         new Label(key + ":"),
-                        createInputField(value, data, key, -1)
-                );
+                        createInputField(value, data, key, -1));
                 content.getChildren().add(fieldRow);
             }
         }
@@ -278,8 +288,7 @@ public class EnhancedHashMapViewer extends Application {
             HBox fieldRow = new HBox(10);
             fieldRow.getChildren().addAll(
                     new Label(nomCle + " :"),
-                    createInputField(value, objetCSA, key, -1)
-            );
+                    createInputField(value, objetCSA, key, -1));
             content.getChildren().add(fieldRow);
         }
 

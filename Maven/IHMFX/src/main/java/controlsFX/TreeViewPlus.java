@@ -1,20 +1,26 @@
 package controlsFX;
 
-import general.ObjetCSA;
-import generalFX.CreateurArborescence;
-import generalFX.ObjetIHM;
-import generalFX.TransformeurObjets;
-import javafx.application.Platform;
-import javafx.geometry.Orientation;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.util.Callback;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import general.ObjetCSA;
+import general.TransformeurObjets;
+import generalFX.CreateurArborescence;
+import generalFX.ObjetIHM;
+import javafx.application.Platform;
+import javafx.geometry.Orientation;
+import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 
 public class TreeViewPlus extends TreeView<ObjetIHM> {
 
@@ -57,10 +63,11 @@ public class TreeViewPlus extends TreeView<ObjetIHM> {
      */
     public void charger_liste(ArrayList<Object> donnees, String type) {
 
-        ArrayList<ObjetCSA> objetDis = TransformeurObjets.transformer_en_objetsDi(donnees, type, null, mom);
+        ArrayList<ObjetCSA> objetDis = TransformeurObjets.transformer_en_objetsCSA(donnees, type, null, mom);
         Platform.runLater(() -> {
             TreeItem root = new TreeItem();
-            ArrayList<TreeItem<ObjetIHM>> items = CreateurArborescence.creer_arborescence(objetDis, ObjetCSA.creer_objet_vide());
+            ArrayList<TreeItem<ObjetIHM>> items = CreateurArborescence.creer_arborescence(objetDis,
+                    ObjetCSA.creer_objet_vide());
             root.getChildren().setAll(items);
             setRoot(root);
             root.setExpanded(true);
@@ -82,7 +89,8 @@ public class TreeViewPlus extends TreeView<ObjetIHM> {
 
     private Node extract_node_from_name(String nomVariable, Object value) {
         Node noeud = noeudAffiche.get(nomVariable);
-        if (noeud == null) noeud = new Label();
+        if (noeud == null)
+            noeud = new Label();
         noeud.setDisable(!isEditable(nomVariable));
         insert_value_in_node(value, noeud);
         return noeud;
@@ -136,7 +144,8 @@ public class TreeViewPlus extends TreeView<ObjetIHM> {
                 data.forEach((key, value) -> {
                     hbox.getChildren().add(extract_node_from_name(key, value));
                     count.getAndDecrement();
-                    if (count.get() > 0) hbox.getChildren().add(new Separator(Orientation.VERTICAL));
+                    if (count.get() > 0)
+                        hbox.getChildren().add(new Separator(Orientation.VERTICAL));
                 });
 
                 setGraphic(hbox);

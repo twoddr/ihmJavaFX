@@ -6,6 +6,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -18,7 +19,7 @@ import generalFX.CustomEditor;
 import generalFX.FenetreGlissante;
 import generalFX.GenerateurColonnesTableView;
 import generalFX.ObjetIHM;
-import generalFX.TransformeurObjets;
+import generalFX.TransformeurObjetsIHM;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -139,6 +140,12 @@ public class ListTableBDController extends BorderPane
      */
     private ContexteFX contexte;
     private BiConsumer<ObjetCSA, String> parentNotifier;
+    /**
+     * Flag indiquant si la fenêtre d'édition modale est actuellement ouverte.
+     * Plus fiable que getScene().getWindow().isShowing() car showAndWait() bloque
+     * le thread et la scène/window peut ne pas être accessible.
+     */
+    private boolean editorOpen = false;
 
     /**
      * Construit un ListTableBDController et charge le fichier FXML associé.
@@ -433,7 +440,7 @@ public class ListTableBDController extends BorderPane
             nomEntete = "-";
         } else {
             nomEntete = elementDeReference.getPublicName();
-            objetIHMS = TransformeurObjets.transformer_en_objetsIHM(donnees, elementDeReference);
+            objetIHMS = TransformeurObjetsIHM.transformer_en_objetsIHM(donnees, elementDeReference);
             elementReferenceIHM = new ObjetIHM(elementDeReference);
         }
 
@@ -487,6 +494,10 @@ public class ListTableBDController extends BorderPane
         } else if (maitreFX != null) {
             maitreFX.action_utilisateur(null, this, "liste reçue");
         }
+    }
+
+    private ArrayList<ObjetIHM> transformer_en_objetsIHM(ArrayList<ObjetCSA> objetsCSA) {
+        return TransformeurObjetsIHM.transformer_en_objetsIHM(objetsCSA);
     }
 
     private void charger_batch_suivant() {
@@ -591,11 +602,7 @@ public class ListTableBDController extends BorderPane
     }
 
     public boolean isEditorOpened() {
-        try {
-            return editorPaneController.getEditeurPersonnel().getScene().getWindow().isShowing();
-        } catch (Exception e) {
-            return false;
-        }
+        return editorOpen;
     }
 
     /**
@@ -837,6 +844,7 @@ public class ListTableBDController extends BorderPane
                     extraire_smart_text(objetAEnvoyer) + "\nVeuillez confirmer, svp");
             alert.setWidth(780);
             alert.setHeight(520);
+            generalFX.StylesheetsFX.apply(alert, this);
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     bdHandler.execute(3, (ObjetCSA) objetAEnvoyer, resultList -> Platform.runLater(() -> {
@@ -860,6 +868,7 @@ public class ListTableBDController extends BorderPane
                     "Suppression de : " + extraire_smart_text(objetAEnvoyer) + "\nVeuillez confirmer, svp");
             alert.setWidth(780);
             alert.setHeight(520);
+            generalFX.StylesheetsFX.apply(alert, this);
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     maitreFX.appeler_bd(3, objetAEnvoyer, this);
@@ -975,27 +984,38 @@ public class ListTableBDController extends BorderPane
      * messageHandler…).
      */
     public void charger_donnees_vers_enfant(ObjetCSA objetDi) {
-        if (isEditorShowing()) {
-            // L'éditeur existe déjà : on lui passe simplement le nouvel objet
+        // Si un éditeur est déjà ouvert (fenêtre modale), on réutilise la même fenêtre
+        if (editorOpen) {
             editorPaneController.charger_donnees(parentEditorPath, objetDi.getCopy());
             return;
         }
 
-        editorPaneController = EditorPaneController.openEditor(objetDi.getCopy(),
-                contexte,
-                customEditorFactory,
-                parentEditorPath);
+        // Construction manuelle de l'éditeur pour configurer le parentNotifier
+        // avant l'appel à show() (showAndWait est bloquant)
+        editorPaneController = new EditorPaneController();
+        if (customEditorFactory != null) {
+            editorPaneController.setCustomEditor(customEditorFactory);
+        }
+        if (contexte != null) {
+            editorPaneController.setContexte(contexte);
+        }
 
-        // parentNotifier : ajout direct sans rechargement (code=1) ou rafraîchissement
-        // (code=2)
+        // parentNotifier doit être en place avant show(), car showAndWait bloque
         editorPaneController.setParentNotifier((code, obj) -> {
-            // pendingSelection = obj;
             if (code == 1) {
                 ajouter_element(obj);
             } else if (code == 2) {
                 modifier_element(obj);
             }
         });
+
+        editorPaneController.charger_donnees(parentEditorPath, objetDi.getCopy());
+
+        editorOpen = true;
+        editorPaneController.show();
+
+        // show() ne retourne qu'à la fermeture → on réinitialise le flag
+        editorOpen = false;
     }
 
     public void modifier_element(ObjetCSA obj) {
@@ -1025,13 +1045,11 @@ public class ListTableBDController extends BorderPane
 
     /**
      * Indique si la fenêtre d'édition enfant est actuellement ouverte.
+     * Utilise un flag booléen plutôt que l'état de la scène/window,
+     * car showAndWait() peut rendre l'état de la fenêtre difficile à détecter.
      */
     public boolean isEditorShowing() {
-        try {
-            return editorPaneController.getEditeurPersonnel().getScene().getWindow().isShowing();
-        } catch (Exception e) {
-            return false;
-        }
+        return editorOpen;
     }
 
     @FXML
@@ -1157,7 +1175,11 @@ public class ListTableBDController extends BorderPane
     }
 
     public ArrayList<ObjetCSA> getListeObjetsCSAComplete() {
-        return TransformeurObjets.transformer_en_objetsDi(listeOriginale);
+        return transformer_en_objetsCSA(listeOriginale);
+    }
+
+    private ArrayList<ObjetCSA> transformer_en_objetsCSA(List<ObjetIHM> listeOriginale2) {
+        return TransformeurObjetsIHM.transformer_en_objetsCSA(new ArrayList<>(listeOriginale2));
     }
 
     /**
@@ -1166,11 +1188,11 @@ public class ListTableBDController extends BorderPane
      * @return une copie de la liste affichée !
      */
     public ArrayList<ObjetCSA> getListeAffichee() {
-        return TransformeurObjets.transformer_en_objetsDi(tableau.getItems());
+        return transformer_en_objetsCSA(tableau.getItems());
     }
 
     public ArrayList<ObjetCSA> getElementsSelectionnes() {
-        return TransformeurObjets.transformer_en_objetsDi(tableau.getSelectionModel().getSelectedItems());
+        return transformer_en_objetsCSA(tableau.getSelectionModel().getSelectedItems());
     }
 
     @FXML

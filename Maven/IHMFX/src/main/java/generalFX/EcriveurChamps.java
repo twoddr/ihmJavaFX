@@ -113,7 +113,7 @@ public class EcriveurChamps {
                 } else if (noeud instanceof TableView) {
                     Platform.runLater(() -> {
                         ObservableList<ObjetIHM> newList = FXCollections.observableArrayList(
-                                TransformeurObjets.transformer_en_objetsIHM(elementBD.getListe(cle)));
+                                TransformeurObjetsIHM.transformer_en_objetsIHM(elementBD.getListe(cle)));
                         TableView<ObjetIHM> tableView = (TableView<ObjetIHM>) noeud;
                         tableView.setItems(newList);
                         tableView.refresh(); // Force immediate refresh

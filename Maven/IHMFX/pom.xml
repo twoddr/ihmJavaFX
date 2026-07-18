@@ -14,7 +14,7 @@
 
   <groupId>macy</groupId>
   <artifactId>ihmfx</artifactId>
-  <version>17.9-SNAPSHOT</version>
+  <version>17.10-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>

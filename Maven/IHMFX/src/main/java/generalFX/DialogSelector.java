@@ -65,6 +65,7 @@ public class DialogSelector {
             VBox content = new VBox(comboBox);
             content.setSpacing(10);
             dialog.getDialogPane().setContent(content);
+            StylesheetsFX.apply(dialog, null);
 
             // Add OK and Cancel buttons
             ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);

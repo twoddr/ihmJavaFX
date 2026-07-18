@@ -1,24 +1,43 @@
 package generalFX;
 
-import controlsFX.*;
-import general.DetecteurModification;
-import general.GestionnaireImbrications;
-import general.ObjetCSA;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.paint.Color;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import controlsFX.ComboEditableController;
+import controlsFX.ComboFiltrableController;
+import controlsFX.CombosImbriques;
+import controlsFX.DateBoxController;
+import controlsFX.DoubleListeController;
+import controlsFX.ListViewStringItems;
+import controlsFX.ListeBDController;
+import controlsFX.ListeFiltrableController;
+import controlsFX.TableViewCRUD;
+import general.DetecteurModification;
+import general.GestionnaireImbrications;
+import general.ObjetCSA;
+import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.paint.Color;
 
 public class LecteurChamps {
     private static ObjetCSA objetCSA;
     private static HashMap<String, Node> hashNoeuds;
 
     public static ObjetCSA enregistrer_donnees(ObjetCSA elementBD,
-                                               HashMap<String, Node> pairesChamps) {
+            HashMap<String, Node> pairesChamps) {
         objetCSA = elementBD;
         hashNoeuds = pairesChamps;
         return lire_champs();
@@ -70,7 +89,8 @@ public class LecteurChamps {
             } else if (noeud instanceof TableView) {
                 objetCSA.inserer_liste(cle, new ArrayList<>(((TableView) noeud).getItems()));
             } else if (noeud instanceof DoubleListeController) {
-                objetCSA.inserer_liste(cle, new ArrayList<>(((DoubleListeController) noeud).getListeCible().getItems()));
+                objetCSA.inserer_liste(cle,
+                        new ArrayList<>(((DoubleListeController) noeud).getListeCible().getItems()));
             } else if (noeud instanceof CheckBox) {
                 objetCSA.inserer_valeur(cle, ((CheckBox) noeud).isSelected());
             } else if (noeud instanceof ColorPicker) {
@@ -91,10 +111,12 @@ public class LecteurChamps {
                             " qu'elle est supposée contenir. La liste ne sera pas enregistrée !");
                 } else {
                     String nomTable = reference.getType();
-                    ArrayList<Object> listeFinale = tableViewCRUD.getListe();
+                    ArrayList<?> listeFinale = tableViewCRUD.getListeAffichee();
                     objetCSA.inserer_liste(nomTable, listeFinale);
-                    ArrayList<Object> listeOriginale = tableViewCRUD.getListeOriginale();
-                    DetecteurModification detecteurModification = new DetecteurModification(listeOriginale, listeFinale);
+                    ArrayList<?> listeOriginale = tableViewCRUD.getListeOriginale();
+                    DetecteurModification detecteurModification = new DetecteurModification(
+                            new ArrayList<>(listeOriginale),
+                            new ArrayList<>(listeFinale));
                     objetCSA.inserer_liste(cle + "_ajouts", detecteurModification.getListeAAjouter());
                     objetCSA.inserer_liste(cle + "_suppressions", detecteurModification.getListeASupprimer());
                 }

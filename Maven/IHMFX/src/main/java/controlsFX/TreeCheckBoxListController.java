@@ -1,20 +1,30 @@
 package controlsFX;
 
-import general.ObjetCSA;
-import generalFX.ObjetIHM;
-import generalFX.TransformeurObjets;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import general.ObjetCSA;
+import generalFX.ObjetIHM;
+import generalFX.TransformeurObjetsIHM;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 
 public class TreeCheckBoxListController extends BorderPane {
 
@@ -102,9 +112,7 @@ public class TreeCheckBoxListController extends BorderPane {
                             });
                         } else {
                             checkBox.setText(item.toString());
-                            setStyle(getTreeItem().isLeaf() ?
-                                    "-fx-font-weight: normal;" :
-                                    "-fx-font-weight: bold;");
+                            setStyle(getTreeItem().isLeaf() ? "-fx-font-weight: normal;" : "-fx-font-weight: bold;");
                             setGraphic(checkBox);
                         }
                     }
@@ -144,7 +152,7 @@ public class TreeCheckBoxListController extends BorderPane {
     }
 
     public void setListe(ArrayList<? extends ObjetCSA> liste) {
-        ArrayList<ObjetIHM> objetIHMS = TransformeurObjets.transformer_en_objetsIHM(liste);
+        ArrayList<ObjetIHM> objetIHMS = TransformeurObjetsIHM.transformer_en_objetsIHM(liste);
         ArrayList<TreeItem<ObjetIHM>> arbre = creer_arborescence(objetIHMS, ObjetCSA.creer_objet_vide());
         Platform.runLater(() -> {
             treeView.getRoot().getChildren().setAll(arbre);
@@ -164,7 +172,6 @@ public class TreeCheckBoxListController extends BorderPane {
         return null;
     }
 
-
     /**
      * Rajoute la liste reçue dans la liste déjà affichée sous un noeud
      *
@@ -172,7 +179,7 @@ public class TreeCheckBoxListController extends BorderPane {
      * @param objetDi  le parent qui devrait se trouver dans le treeView
      */
     public void ajouter_liste(ArrayList<? extends ObjetCSA> objetDis, ObjetCSA objetDi) {
-        ArrayList<ObjetIHM> objetIHMS = TransformeurObjets.transformer_en_objetsIHM(objetDis);
+        ArrayList<ObjetIHM> objetIHMS = TransformeurObjetsIHM.transformer_en_objetsIHM(objetDis);
         if (objetDi == null) {
             rafraichir_liste(treeView.getRoot(), creer_arborescence(objetIHMS, ObjetCSA.creer_objet_vide()));
             return;
@@ -186,8 +193,9 @@ public class TreeCheckBoxListController extends BorderPane {
                 rafraichir_liste(branche, creer_arborescence(objetIHMS, objetDi));
                 return;
             }
-            System.err.println("TreeViewController/ajouter_liste : la liste de type " + objetDi.getType() + " n'a pas trouvé de " +
-                    "parent d'id = " + objetDi.getId());
+            System.err.println(
+                    "TreeViewController/ajouter_liste : la liste de type " + objetDi.getType() + " n'a pas trouvé de " +
+                            "parent d'id = " + objetDi.getId());
         });
     }
 
@@ -221,7 +229,6 @@ public class TreeCheckBoxListController extends BorderPane {
         update_ui();
     }
 
-
     /**
      * Remplace la liste affichée par la liste reçue sous un noeud
      *
@@ -229,7 +236,7 @@ public class TreeCheckBoxListController extends BorderPane {
      * @param parent   le parent qui devrait se trouver dans le treeView
      */
     public void remplacer_liste(ArrayList<? extends ObjetCSA> objetDis, ObjetCSA parent) {
-        ArrayList<ObjetIHM> objetIHMS = TransformeurObjets.transformer_en_objetsIHM(objetDis);
+        ArrayList<ObjetIHM> objetIHMS = TransformeurObjetsIHM.transformer_en_objetsIHM(objetDis);
         if (parent == null) {
             treeView.getRoot().getChildren().setAll(creer_arborescence(objetIHMS, ObjetCSA.creer_objet_vide()));
             return;
@@ -240,8 +247,9 @@ public class TreeCheckBoxListController extends BorderPane {
             branche.getChildren().setAll(creer_arborescence(objetIHMS, parent));
             return;
         }
-        System.err.println("TreeViewController/ajouter_liste : la liste de type " + parent.getType() + " n'a pas trouvé de " +
-                "parent d'id = " + idParent);
+        System.err.println(
+                "TreeViewController/ajouter_liste : la liste de type " + parent.getType() + " n'a pas trouvé de " +
+                        "parent d'id = " + idParent);
     }
 
     private ArrayList<TreeItem<ObjetIHM>> creer_arborescence(ArrayList<ObjetIHM> objetIHMS, ObjetCSA parent) {
@@ -306,52 +314,54 @@ public class TreeCheckBoxListController extends BorderPane {
         return sortie;
     }
 
-    /*private static class CheckBoxElement extends CheckBox {
-        ObjetIHM objetIHM;
-
-        public CheckBoxElement() {
-            setPadding(new Insets(5, 5, 5, 5));
-            objetIHM = null;
-            Platform.runLater(() -> {
-                setText(ConstantesFX.STRING_VIDE);
-            });
-        }
-
-        public CheckBoxElement(ObjetIHM objetDiIHM) {
-            setPadding(new Insets(5, 5, 5, 5));
-            objetIHM = objetDiIHM;
-            Platform.runLater(() -> {
-                setText(objetIHM.toString());
-            });
-        }
-
-        public ObjetCSA getObjet() {
-            if (objetIHM == null) {
-                return null;
-            }
-            return objetIHM.getObjetCSA();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (objetIHM == null) {
-                System.err.println("** TreeCheckBox : objetIHM non initialisé !");
-                return false;
-            }
-            if (obj instanceof ObjetIHM) {
-                return objetIHM.equals(obj);
-            }
-            if (obj instanceof ObjetCSA) {
-                return objetIHM.getObjetCSA().equals(obj);
-            }
-            if (obj instanceof CheckBoxElement) {
-                return objetIHM.equals(((CheckBoxElement) obj).objetIHM);
-            }
-            return false;
-        }
-
-        public void setObjetIHM(ObjetIHM item) {
-            objetIHM = item;
-        }
-    }*/
+    /*
+     * private static class CheckBoxElement extends CheckBox {
+     * ObjetIHM objetIHM;
+     * 
+     * public CheckBoxElement() {
+     * setPadding(new Insets(5, 5, 5, 5));
+     * objetIHM = null;
+     * Platform.runLater(() -> {
+     * setText(ConstantesFX.STRING_VIDE);
+     * });
+     * }
+     * 
+     * public CheckBoxElement(ObjetIHM objetDiIHM) {
+     * setPadding(new Insets(5, 5, 5, 5));
+     * objetIHM = objetDiIHM;
+     * Platform.runLater(() -> {
+     * setText(objetIHM.toString());
+     * });
+     * }
+     * 
+     * public ObjetCSA getObjet() {
+     * if (objetIHM == null) {
+     * return null;
+     * }
+     * return objetIHM.getObjetCSA();
+     * }
+     * 
+     * @Override
+     * public boolean equals(Object obj) {
+     * if (objetIHM == null) {
+     * System.err.println("** TreeCheckBox : objetIHM non initialisé !");
+     * return false;
+     * }
+     * if (obj instanceof ObjetIHM) {
+     * return objetIHM.equals(obj);
+     * }
+     * if (obj instanceof ObjetCSA) {
+     * return objetIHM.getObjetCSA().equals(obj);
+     * }
+     * if (obj instanceof CheckBoxElement) {
+     * return objetIHM.equals(((CheckBoxElement) obj).objetIHM);
+     * }
+     * return false;
+     * }
+     * 
+     * public void setObjetIHM(ObjetIHM item) {
+     * objetIHM = item;
+     * }
+     * }
+     */
 }

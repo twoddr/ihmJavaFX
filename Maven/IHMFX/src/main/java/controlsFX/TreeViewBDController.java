@@ -12,11 +12,11 @@ import java.util.ResourceBundle;
 import general.GestionnaireRetour;
 import general.Monostable;
 import general.ObjetCSA;
+import general.TransformeurObjets;
 import generalFX.CreateurArborescence;
 import generalFX.CustomEditor;
 import generalFX.FX_RGBConverter;
 import generalFX.ObjetIHM;
-import generalFX.TransformeurObjets;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -474,7 +474,7 @@ public class TreeViewBDController extends BorderPane implements Initializable, M
         activeModification = !readonly;
         activeSuppression = !readonly;
 
-        ArrayList<ObjetCSA> objetDis = TransformeurObjets.transformer_en_objetsDi(donnees, type, null, maitreFX);
+        ArrayList<ObjetCSA> objetDis = TransformeurObjets.transformer_en_objetsCSA(donnees, type, null, maitreFX);
         ObjetIHM elementReferenceIHM = new ObjetIHM(elementDeReference);
         Platform.runLater(() -> {
             setColumn(elementReferenceIHM);
@@ -627,6 +627,7 @@ public class TreeViewBDController extends BorderPane implements Initializable, M
                         "Suppression de l'objet : " + coquille.getNom() + "\nVeuillez confirmer, svp");
                 alert.setWidth(780);
                 alert.setHeight(520);
+                generalFX.StylesheetsFX.apply(alert, this);
                 alert.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.OK) {
                         maitreFX.appeler_bd(3, selections, this);

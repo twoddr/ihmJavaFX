@@ -1,7 +1,26 @@
 package mainIHMFX;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+
+import controlsFX.ComboEditableController;
+import controlsFX.ComboFiltrableController;
+import controlsFX.DateBoxController;
+import controlsFX.DoubleListeController;
+import controlsFX.EcouteurFX;
+import controlsFX.EditorPaneController;
+import controlsFX.ListTableBDController;
+import controlsFX.ListeBDController;
+import controlsFX.ListeFiltrableController;
+import controlsFX.LogController;
+import controlsFX.MaitreFX;
+import controlsFX.TableViewCRUD;
+import controlsFX.TreeCheckBoxListController;
+import controlsFX.TreeViewBDController;
+import controlsFX.TreeViewPlus;
 import controlsFX.Calendrier.AgendaControlable;
-import controlsFX.*;
 import general.GestionnaireRetour;
 import general.Individu;
 import general.ObjetCSA;
@@ -26,11 +45,6 @@ import mainIHMFX.objets.Article;
 import mainIHMFX.objets.GenerateurObjets;
 import mainIHMFX.objets.MedecinTraitant;
 import mainIHMFX.objets.Voiture;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 
 public class TestFX extends Application implements MaitreFX, EcouteurFX {
 
@@ -162,8 +176,8 @@ public class TestFX extends Application implements MaitreFX, EcouteurFX {
         ObjetCSA objetCSA = GenerateurObjets.createSampleObject();
         editorPane.charger_donnees("", objetCSA);
 
-        tableViewCRUD = new TableViewCRUD(this);
-        tableViewCRUD.setContentFree(true);
+        tableViewCRUD = new TableViewCRUD();
+        // tableViewCRUD.setContentFree(true);
         tableViewCRUD.charger_liste(new ArrayList<>(voitures), new Voiture());
         tableViewCRUDBorderPane.setCenter(tableViewCRUD);
     }

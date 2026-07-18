@@ -19,6 +19,7 @@ public class DialogConfirmer {
         alert.setTitle("Veuillez confirmer, svp");
         alert.setHeaderText(entete);
         alert.setContentText(message);
+        StylesheetsFX.apply(alert, null);
 
         // Show the dialog and wait for the user's response
         Optional<ButtonType> result = alert.showAndWait();

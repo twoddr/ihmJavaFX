@@ -1,8 +1,24 @@
 package controlsFX;
 
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import general.GestionnaireImbrications;
 import general.GestionnaireRetour;
 import general.Monostable;
+import generalFX.StylesheetsFX;
 import general.ObjetCSA;
 import generalFX.CustomEditor;
 import generalFX.EcriveurChamps;
@@ -17,18 +33,26 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import javafx.stage.Window;
 
 public class EditorPaneController extends BorderPane
         implements Initializable, MaitreFX {
@@ -68,6 +92,8 @@ public class EditorPaneController extends BorderPane
      * private Runnable refreshHandler; // Pour demander un rafraîchissement
      */
     private java.util.function.BiConsumer<Integer, ObjetCSA> parentNotifier; // Pour notifier le parent (code, objet)
+
+    private Stage editorStage; // Stage de cette fenêtre modale, pour fermeture synchrone
 
     /**
      * C'est le pannneau qui contient les boutons enregistrer, effacer et autres...
@@ -195,23 +221,29 @@ public class EditorPaneController extends BorderPane
     }
 
     public void show() {
+        Scene scene = new Scene(this);
+        // Hérite du thème de l'application hôte ; fallback CSS IHMFX si standalone
+        StylesheetsFX.apply(scene, this);
+
+        editorStage = new Stage();
+        editorStage.initModality(Modality.APPLICATION_MODAL);
+        Window owner = StylesheetsFX.findOwnerWindow(this);
+        if (owner != null) {
+            editorStage.initOwner(owner);
+        }
+        editorStage.setScene(scene);
+
+        editorStage.setOnCloseRequest(event -> {
+            scene.getStylesheets().clear();
+            RegistreDesNoeuds.getInstance().unregisterPrefix(editorPath);
+        });
+        // On diffère sizeToScene et l'affichage après que le contenu asynchrone
+        // (Platform.runLater dans charger_donnees) ait eu le temps de s'exécuter.
+        // Sinon la fenêtre s'ouvre "rikiki" car le centerPane est encore vide
+        // au moment du sizeToScene().
         Platform.runLater(() -> {
-            Scene scene = new Scene(this);
-            scene.getStylesheets().add(Objects.requireNonNull(
-                    getClass().getResource("/styles/style.css")).toExternalForm());
-
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-
-            stage.setScene(scene);
-
-            stage.setOnCloseRequest(event -> {
-                scene.getStylesheets().clear();
-                RegistreDesNoeuds.getInstance().unregisterPrefix(editorPath);
-            });
-
-            stage.sizeToScene();
-            stage.showAndWait();
+            editorStage.sizeToScene();
+            editorStage.showAndWait();
         });
 
         rafraichir_listes();
@@ -239,8 +271,9 @@ public class EditorPaneController extends BorderPane
         // Nettoyer le registre avant de fermer
         RegistreDesNoeuds.getInstance().unregisterPrefix(editorPath);
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
+        if (editorStage != null) {
+            editorStage.close();
+        }
     }
 
     @FXML
@@ -765,7 +798,7 @@ public class EditorPaneController extends BorderPane
             if (customNode != null) {
                 node = customNode;
             } else {
-                TableViewCRUD tableCRUD = new TableViewCRUD(this);
+                TableViewCRUD tableCRUD = new TableViewCRUD();
                 if (contexte != null)
                     tableCRUD.setContexte(contexte);
                 node = tableCRUD;
@@ -891,8 +924,10 @@ public class EditorPaneController extends BorderPane
      * Tronque un texte à une longueur maximale en ajoutant "…" si nÃ©cessaire.
      */
     private static String tronquerTexte(String texte, int maxLength) {
-        if (texte == null) return "";
-        if (texte.length() <= maxLength) return texte;
+        if (texte == null)
+            return "";
+        if (texte.length() <= maxLength)
+            return texte;
         return texte.substring(0, maxLength) + "…";
     }
 

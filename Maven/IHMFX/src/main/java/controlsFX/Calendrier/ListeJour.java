@@ -588,6 +588,7 @@ public class ListeJour extends BorderPane implements Comparable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Veuillez confirmer la suppression"
                 + " des " + taille + " éléments\n"
                 + "Ceci est irréversible !");
+        generalFX.StylesheetsFX.apply(alert, this);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 agenda.getConteneur().demande_suppression_liste(new ArrayList<>(aSupprimer));

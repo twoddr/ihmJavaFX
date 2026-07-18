@@ -23,6 +23,7 @@ public class AfficheurAlerte {
             alert.setTitle(title);
             alert.setHeaderText(null); // No header
             alert.setContentText(message);
+            StylesheetsFX.apply(alert, null);
             alert.showAndWait();
         });
     }
@@ -39,6 +40,7 @@ public class AfficheurAlerte {
             alert.setTitle(titre);
             alert.setHeaderText(null);
             alert.setContentText(message);
+            StylesheetsFX.apply(alert, null);
             alert.showAndWait();
         });
     }
@@ -57,6 +59,7 @@ public class AfficheurAlerte {
             alert.setTitle(titre);
             alert.setHeaderText(null);
             alert.setContentText(message);
+            StylesheetsFX.apply(alert, null);
 
             Optional<ButtonType> resultat = alert.showAndWait();
             result[0] = resultat.isPresent() && resultat.get() == ButtonType.OK;
@@ -76,6 +79,7 @@ public class AfficheurAlerte {
             alert.setTitle(titre);
             alert.setHeaderText(null);
             alert.setContentText(message);
+            StylesheetsFX.apply(alert, null);
             alert.showAndWait();
         });
     }

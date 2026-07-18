@@ -214,6 +214,7 @@ public class MonTreeViewLight extends TreeView<ObjetIHM> implements MaitreFX {
         alert.setTitle("Confirmation");
         alert.setHeaderText("Supprimer " + objet.getPublicName() + " ?");
         alert.setContentText("Cette action est irréversible.");
+        generalFX.StylesheetsFX.apply(alert, this);
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {

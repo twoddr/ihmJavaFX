@@ -15,7 +15,7 @@ import general.ObjetCSA;
 import generalFX.CreateurArborescence;
 import generalFX.FX_RGBConverter;
 import generalFX.ObjetIHM;
-import generalFX.TransformeurObjets;
+import generalFX.TransformeurObjetsIHM;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -608,7 +608,7 @@ public class ListTableTreeBD extends TreeTableView<ObjetIHM> implements Gestionn
             nomEntete = "-";
         } else {
             nomEntete = elementDeReference.getPublicName();
-            objetIHMS = TransformeurObjets.transformer_en_objetsIHM(donnees, elementDeReference, maitreFX);
+            objetIHMS = transformer_en_objetsIHM(donnees, elementDeReference);
             elementReferenceIHM = new ObjetIHM(elementDeReference);
         }
         Platform.runLater(() -> {
@@ -632,6 +632,10 @@ public class ListTableTreeBD extends TreeTableView<ObjetIHM> implements Gestionn
         if (maitreFX != null) {
             maitreFX.action_utilisateur(null, this, "liste reçue");
         }
+    }
+
+    private ArrayList<ObjetIHM> transformer_en_objetsIHM(ArrayList<Object> donnees, ObjetCSA eltRef) {
+        return TransformeurObjetsIHM.transformer_en_objetsIHM(donnees, eltRef);
     }
 
     private void debugTreeItem(TreeItem<ObjetIHM> item, int niveau) {
@@ -765,11 +769,15 @@ public class ListTableTreeBD extends TreeTableView<ObjetIHM> implements Gestionn
         selections.forEach(treeItem -> {
             objetIHMS.add(treeItem.getValue());
         });
-        return TransformeurObjets.transformer_en_objetsDi(objetIHMS);
+        return transformer_en_objetsCSA(objetIHMS);
     }
 
     public ArrayList<ObjetCSA> getListeOriginale() {
-        return TransformeurObjets.transformer_en_objetsDi(listeOriginale);
+        return transformer_en_objetsCSA(listeOriginale);
+    }
+
+    private ArrayList<ObjetCSA> transformer_en_objetsCSA(ArrayList<ObjetIHM> objetIHMs) {
+        return TransformeurObjetsIHM.transformer_en_objetsCSA(objetIHMs);
     }
 
     /**

@@ -47,8 +47,9 @@ public class ListPopupController extends BorderPane implements Initializable {
         this.listview.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.setScene(new Scene(this));
-        //this.dialog.initStyle(StageStyle.UNDECORATED);
+        Scene scene = new Scene(this);
+        StylesheetsFX.apply(scene, this);
+        dialog.setScene(scene);
     }
 
     @FXML
@@ -92,6 +93,16 @@ public class ListPopupController extends BorderPane implements Initializable {
             this.mom = (BoutonListe) mere;
         }
 
+        // Réapplique le thème hôte au moment de l'affichage (plus fiable qu'à l'init)
+        if (dialog.getScene() != null) {
+            StylesheetsFX.apply(dialog.getScene(), mere != null ? mere : this);
+        }
+        if (dialog.getOwner() == null) {
+            javafx.stage.Window owner = StylesheetsFX.findOwnerWindow(mere != null ? mere : this);
+            if (owner != null) {
+                dialog.initOwner(owner);
+            }
+        }
         dialog.show();
     }
 }
