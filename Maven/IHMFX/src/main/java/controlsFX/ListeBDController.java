@@ -1,5 +1,13 @@
 package controlsFX;
 
+import java.io.IOException;
+import java.net.URL;
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ResourceBundle;
+import java.util.TreeSet;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -14,21 +22,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-
-import java.io.IOException;
-import java.net.URL;
-import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.ResourceBundle;
-import java.util.TreeSet;
 
 /**
  * Contrôleur pour une liste de données BD avec fonctionnalités de filtrage,
@@ -207,7 +213,7 @@ public class ListeBDController extends VBox implements Initializable {
         Platform.runLater(() -> {
             if (tfFiltre.getText().isEmpty()) {
                 liste.getItems().setAll(listeOriginale);
-                //liste.refresh();
+                // liste.refresh();
                 if (selection == null) {
                     clearSelection();
                 } else {
@@ -238,7 +244,7 @@ public class ListeBDController extends VBox implements Initializable {
         Platform.runLater(() -> {
             String texte = Normalizer.normalize(texteFiltre.trim().toUpperCase(),
                     Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]",
-                    "");
+                            "");
             TreeSet<Object> inclus = new TreeSet<>();
 
             Integer nombre = null;
@@ -252,7 +258,7 @@ public class ListeBDController extends VBox implements Initializable {
 
                     selection = Normalizer.normalize(elt.toString().trim().toUpperCase(),
                             Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]",
-                            "");
+                                    "");
 
                     if (selection.startsWith(texte)) {
                         inclus.add(elt);
@@ -260,7 +266,7 @@ public class ListeBDController extends VBox implements Initializable {
                 });
 
                 liste.getItems().setAll(inclus);
-                //liste.refresh();
+                // liste.refresh();
 
                 if (selection != null) {
                     if (selection instanceof ObjetCSA) {
@@ -296,6 +302,11 @@ public class ListeBDController extends VBox implements Initializable {
         afficher_fenetre_actuelle();
     }
 
+    public void setTypeAffiche(String type) {
+        dernierTypeVu = type;
+        afficher_fenetre_actuelle();
+    }
+
     private void afficher_fenetre_actuelle() {
         Platform.runLater(() -> {
             liste.getItems().setAll(fenetreGlissante.getFenetreActuelle());
@@ -314,7 +325,6 @@ public class ListeBDController extends VBox implements Initializable {
             afficher_fenetre_actuelle();
         }
     }
-
 
     /**
      * Vide complètement la liste et sa sélection.
@@ -514,9 +524,11 @@ public class ListeBDController extends VBox implements Initializable {
         btnDupliquer.setVisible(b);
     }
 
-   /* public ListView<Object> getListView() {
-        return liste;
-    }*/
+    /*
+     * public ListView<Object> getListView() {
+     * return liste;
+     * }
+     */
 
     /**
      * Active ou désactive l'affichage de la ligne de boutons.
@@ -568,6 +580,5 @@ public class ListeBDController extends VBox implements Initializable {
             getChildren().remove(ligneRafraichir);
         });
     }
-
 
 }

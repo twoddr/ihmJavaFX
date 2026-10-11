@@ -18,10 +18,13 @@ import javafx.stage.Window;
  * <p>
  * Ordre de résolution :
  * <ol>
- *   <li>scène du nœud propriétaire fourni</li>
- *   <li>première fenêtre affichée ayant déjà des stylesheets</li>
+ *   <li>stylesheets du nœud propriétaire et de ses ancêtres {@link Parent}</li>
+ *   <li>stylesheets de la {@link Scene} et de sa racine</li>
+ *   <li>première fenêtre affichée ayant des stylesheets (scène et/ou racine)</li>
  *   <li>fallback {@code /styles/style.css} embarqué dans IHMFX</li>
  * </ol>
+ * Note : beaucoup d'apps (ex. CentreMedical) attachent le CSS sur le
+ * {@code Parent} racine plutôt que sur la {@code Scene}.
  */
 public final class StylesheetsFX {
 
@@ -57,7 +60,7 @@ public final class StylesheetsFX {
         DialogPane pane = dialog.getDialogPane();
         apply(pane, ownerHint);
         Window owner = findOwnerWindow(ownerHint);
-        if (owner != null) {
+        if (owner != null && dialog.getOwner() == null) {
             dialog.initOwner(owner);
         }
     }
@@ -68,9 +71,10 @@ public final class StylesheetsFX {
     public static List<String> resolve(Node ownerHint) {
         LinkedHashSet<String> sheets = new LinkedHashSet<>();
 
-        Scene fromHint = ownerHint != null ? ownerHint.getScene() : null;
-        if (fromHint != null && !fromHint.getStylesheets().isEmpty()) {
-            sheets.addAll(fromHint.getStylesheets());
+        collectFromNodeHierarchy(ownerHint, sheets);
+
+        if (sheets.isEmpty() && ownerHint != null) {
+            collectFromScene(ownerHint.getScene(), sheets);
         }
 
         if (sheets.isEmpty()) {
@@ -78,9 +82,8 @@ public final class StylesheetsFX {
                 if (!window.isShowing()) {
                     continue;
                 }
-                Scene scene = window.getScene();
-                if (scene != null && !scene.getStylesheets().isEmpty()) {
-                    sheets.addAll(scene.getStylesheets());
+                collectFromScene(window.getScene(), sheets);
+                if (!sheets.isEmpty()) {
                     break;
                 }
             }
@@ -112,6 +115,41 @@ public final class StylesheetsFX {
             }
         }
         return null;
+    }
+
+    private static void collectFromNodeHierarchy(Node node, LinkedHashSet<String> sheets) {
+        Node current = node;
+        while (current != null) {
+            if (current instanceof Parent parent) {
+                addValid(sheets, parent.getStylesheets());
+            }
+            current = current.getParent();
+        }
+        if (node != null) {
+            collectFromScene(node.getScene(), sheets);
+        }
+    }
+
+    private static void collectFromScene(Scene scene, LinkedHashSet<String> sheets) {
+        if (scene == null) {
+            return;
+        }
+        addValid(sheets, scene.getStylesheets());
+        Parent root = scene.getRoot();
+        if (root != null) {
+            addValid(sheets, root.getStylesheets());
+        }
+    }
+
+    private static void addValid(LinkedHashSet<String> sheets, Iterable<String> candidates) {
+        if (candidates == null) {
+            return;
+        }
+        for (String sheet : candidates) {
+            if (sheet != null && !sheet.isBlank() && !"null".equals(sheet)) {
+                sheets.add(sheet);
+            }
+        }
     }
 
     private static String fallbackStylesheet() {

@@ -4,6 +4,8 @@ import general.Monostable;
 import general.ObjetCSA;
 import generalFX.CustomEditor;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,12 +39,23 @@ import java.util.function.Predicate;
 public class ComboEditableController<T> extends HBox
         implements Initializable {
 
-    private static final int MAX_RESULTATS_COMBO = 50;
-    private static final int LIMITE_AFFICHAGE_AUTO = 10;
-    private static final boolean DEBUG_COMBO = true;
+    /** Nombre d'items affichés par « page » dans le popup ; le reste se charge au scroll. */
+    private static final int TAILLE_PAGE = 50;
+    /** Déclenche le chargement de la page suivante quelques cellules avant la fin. */
+    private static final int PREFETCH = 5;
+    private static final boolean DEBUG_COMBO = false;
 
-    private final TreeMap<String, Object> hashOriginale = new TreeMap<>();
-    private final TreeMap<String, Object> hashComplete = new TreeMap<>();
+    /** Liste complète des éléments (clé triée -> objet). */
+    private final TreeMap<String, Object> listeComplete = new TreeMap<>();
+    /** Clés normalisées (majuscules, sans accents) pré-calculées au chargement. */
+    private final Map<String, String> clesNormalisees = new HashMap<>();
+    /** Correspondances de la saisie courante (toutes les clés qui matchent le filtre). */
+    private final List<String> correspondances = new ArrayList<>();
+    /** Vue affichée par le combo : les premières TAILLE_PAGE correspondances. */
+    private final ObservableList<String> page = FXCollections.observableArrayList();
+    /** Évite un double chargement de page pendant un scroll. */
+    private boolean chargementPageEnCours = false;
+
     private final Monostable actionEnabler = new Monostable(true, false);
     private final Set<String> toStringDupliques = new HashSet<>();
     private final Object operationLock = new Object();
@@ -63,7 +76,6 @@ public class ComboEditableController<T> extends HBox
     private Class<T> type;
     private java.util.function.Function<EditorPaneController, CustomEditor> editeurPersonnel = null;
     private Predicate<ObjetCSA> postCreateCallback;
-    private int previousTextLength = 0;
 
     // Handlers fonctionnels (remplacent MaitreFX)
     /**
@@ -120,21 +132,18 @@ public class ComboEditableController<T> extends HBox
         btnAjouter.setTooltip(new Tooltip("Créer un nouvel item"));
         btnRafraichir.setTooltip(new Tooltip("Rafraîchir la liste"));
 
+        combo.setItems(page);
+
         combo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (isProgrammaticChange || listenersInhibited) return;
             if (newVal == null || newVal.equals(oldVal)) return;
             if (!actionEnabler.isStable()) return;
 
             actionEnabler.go();
-            selection = hashOriginale.get(newVal);
+            selection = listeComplete.get(newVal);
             BiConsumer<Object, String> uah = effectiveUserActionHandler();
             if (uah != null)
                 uah.accept(selection, "choix combo effectué");
-        });
-
-        combo.setOnShowing(x -> {
-            if (hashComplete.size() > MAX_RESULTATS_COMBO)
-                combo.setPromptText(String.format("%d résultats — tapez pour filtrer", hashComplete.size()));
         });
 
         combo.setCellFactory(lv -> new javafx.scene.control.ListCell<>() {
@@ -143,21 +152,52 @@ public class ComboEditableController<T> extends HBox
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
+                    setTooltip(null);
                 } else {
                     setText(item.length() > 25 ? item.substring(0, 22) + "..." : item);
                     setTooltip(new Tooltip(item));
+                    // Chargement à la volée : on approche du bas de la liste affichée.
+                    if (getIndex() >= page.size() - PREFETCH)
+                        chargerPageSuivante();
                 }
             }
         });
 
-        combo.getEditor().textProperty().addListener((obs, ov, nv) ->
-                log("EDITOR text: '" + ov + "' -> '" + nv + "'"));
+        // Filtrage piloté par le texte. On aligne la VALEUR du combo sur le texte tapé :
+        // c'est ce qui empêche JavaFX de réécrire l'éditeur (et de remettre le caret à 0)
+        // lorsqu'on remplace la liste d'items. Aucune sauvegarde/restauration de caret
+        // n'est donc nécessaire.
+        combo.getEditor().textProperty().addListener((obs, ov, nv) -> {
+            if (isProgrammaticChange || listenersInhibited) return;
+            // Sélection d'un item dans la liste déroulante : le texte reflète alors la
+            // sélection — ne pas relancer le filtrage.
+            String itemSelectionne = combo.getSelectionModel().getSelectedItem();
+            if (itemSelectionne != null && itemSelectionne.equals(nv)) return;
 
-        combo.getItems().addListener((javafx.collections.ListChangeListener<String>) c ->
-                log("ITEMS changed, size=" + combo.getItems().size()));
+            // Une saisie libre n'est plus une sélection valide (KISS).
+            selection = null;
+            // ★ value == texte tapé : indispensable pour préserver l'éditeur et le caret.
+            // Ce setValue déclenche un changement de selectedItem (le texte devient
+            // « sélection ») : on l'inhibe pour ne pas le confondre avec un choix utilisateur.
+            isProgrammaticChange = true;
+            try {
+                combo.setValue(nv);
+            } finally {
+                isProgrammaticChange = false;
+            }
+            appliquerFiltre(normalize(nv == null ? "" : nv));
 
+            if (nv != null && !nv.isEmpty() && combo.getEditor().isFocused() && !combo.isShowing())
+                Platform.runLater(() -> { if (!combo.isShowing()) combo.show(); });
+        });
+
+        // ENTER : validation unique de la saisie (item surligné, correspondance exacte
+        // ou premier résultat du filtre).
         combo.getEditor().addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-            if (e.getCode() == KeyCode.ENTER) combo.hide();
+            if (e.getCode() == KeyCode.ENTER) {
+                validerEntree();
+                e.consume();
+            }
         });
     }
 
@@ -225,10 +265,16 @@ public class ComboEditableController<T> extends HBox
     }
 
     /**
-     * Retourne la liste originale.
+     * Retourne la liste complète (non filtrée) des éléments gérés par ce combo.
+     * <p>
+     * Contrairement à {@code combo.getItems()} (la vue affichée, plafonnée à
+     * {@link #TAILLE_PAGE} pour la performance du popup, complétée au scroll), cette
+     * liste contient bien tous les éléments chargés.
+     *
+     * @return une copie complète de la liste interne
      */
     public ArrayList<Object> getListeComplete() {
-        return new ArrayList<>(hashOriginale.values());
+        return new ArrayList<>(listeComplete.values());
     }
 
     // -------------------------------------------------------------------------
@@ -253,19 +299,22 @@ public class ComboEditableController<T> extends HBox
             operationInProgress = true;
         }
 
-        try {
-            // Store listener state
-            listenersInhibited = inhibitListeners;
-            // Restore initial list and handle selection
-            Object targetSelection = (aSelectionner == null) ? selection : aSelectionner;
-            // Populate the complete hash
-            populerHashComplete(liste);
-            restaurer_liste_initiale_unified(targetSelection, !fireMasterEvent);
+        Runnable travail = () -> {
+            try {
+                listenersInhibited = inhibitListeners;
+                Object targetSelection = (aSelectionner == null) ? selection : aSelectionner;
+                populerListeComplete(liste);
+                restaurerListeEtSelection(targetSelection, !fireMasterEvent);
+            } finally {
+                listenersInhibited = false;
+                operationInProgress = false;
+            }
+        };
 
-        } finally {
-            operationInProgress = false;
-            listenersInhibited = false;
-        }
+        if (Platform.isFxApplicationThread())
+            travail.run();
+        else
+            Platform.runLater(travail);
     }
 
     /**
@@ -392,10 +441,9 @@ public class ComboEditableController<T> extends HBox
     }
 
     /**
-     * Flag is now set/reset INSIDE the Platform.runLater lambda in all paths.
-     * pendingSelection is cleared when a subsequent setListe still can't find the object
-     * (handled in restaurer_liste_initiale).
-     * silent mode is enforced because the flag is active when the listener fires.
+     * Sélectionne l'objet demandé. Si l'objet n'est pas encore dans la liste (liste non
+     * chargée), la demande est mémorisée (pendingSelection) et retentée au prochain
+     * remplissage.
      */
     private boolean selectInternal(Object nouveau, boolean silent) {
         if (nouveau == null) {
@@ -403,60 +451,14 @@ public class ComboEditableController<T> extends HBox
             return false;
         }
 
-        String clefToSelect = null;
-        Object valeurTrouvee = null;
-
-        if (nouveau instanceof String s) {
-            if (hashOriginale.containsKey(s)) {
-                clefToSelect = s;
-                valeurTrouvee = hashOriginale.get(s);
-            }
-        } else {
-            for (Map.Entry<String, Object> e : hashOriginale.entrySet()) {
-                if (isEquivalent(nouveau, e.getValue())) {
-                    clefToSelect = e.getKey();
-                    valeurTrouvee = e.getValue();
-                    break;
-                }
-            }
-            if (clefToSelect == null) {
-                for (Map.Entry<String, Object> e : hashComplete.entrySet()) {
-                    if (isEquivalent(nouveau, e.getValue())) {
-                        clefToSelect = e.getKey();
-                        valeurTrouvee = e.getValue();
-                        hashOriginale.putIfAbsent(clefToSelect, valeurTrouvee);
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (clefToSelect == null) {
-            // memorize the pending request; it will be retried in restaurer_liste_initiale
+        String cle = trouverCle(nouveau);
+        if (cle == null) {
             pendingSelection = nouveau;
             log("Sélection différée mémorisée pour: " + nouveau);
             return false;
         }
 
-        final String finalKey = clefToSelect;
-        final Object finalVal = valeurTrouvee;
-
-        //flag is set INSIDE the lambda — it is active when the listener fires
-        Platform.runLater(() -> {
-            isProgrammaticChange = true;
-            try {
-                if (!combo.getItems().contains(finalKey))
-                    combo.getItems().setAll(hashOriginale.keySet());
-                combo.getSelectionModel().select(finalKey);
-                selection = finalVal;
-                pendingSelection = null; // successfully applied
-            } finally {
-                isProgrammaticChange = false;
-            }
-            BiConsumer<Object, String> uah = effectiveUserActionHandler();
-            if (!silent && uah != null && !listenersInhibited)
-                uah.accept(selection, "sélection interne");
-        });
+        selectionnerCle(cle, silent);
         return true;
     }
 
@@ -468,45 +470,24 @@ public class ComboEditableController<T> extends HBox
      * @param timeoutMillis temps à attendre pour que la liste se remplisse
      */
     public boolean selectAndWait(Object nouveau, long timeoutMillis) {
-        Map.Entry<String, Object> entry = findEntryFor(nouveau);
-        if (entry == null) {
+        String cle = trouverCle(nouveau);
+        if (cle == null) {
             clearSelection();
             return false;
         }
 
-        final String key = entry.getKey();
-        final Object val = entry.getValue();
-
         if (Platform.isFxApplicationThread()) {
-            isProgrammaticChange = true;
-            try {
-                if (!combo.getItems().contains(key)) combo.getItems().setAll(hashOriginale.keySet());
-                combo.getSelectionModel().select(key);
-                selection = val;
-            } finally {
-                isProgrammaticChange = false;
-            }
-            BiConsumer<Object, String> uah = effectiveUserActionHandler();
-            if (uah != null && !listenersInhibited) {
-                uah.accept(selection, "sélection sync");
-            }
+            selectionnerCle(cle, false);
             return true;
         }
 
         CountDownLatch latch = new CountDownLatch(1);
         AtomicBoolean result = new AtomicBoolean(false);
         Platform.runLater(() -> {
-            isProgrammaticChange = true;
             try {
-                if (!combo.getItems().contains(key)) combo.getItems().setAll(hashOriginale.keySet());
-                combo.getSelectionModel().select(key);
-                selection = val;
+                selectionnerCle(cle, false);
                 result.set(true);
             } finally {
-                isProgrammaticChange = false;
-                BiConsumer<Object, String> uah = effectiveUserActionHandler();
-                if (uah != null && !listenersInhibited)
-                    uah.accept(selection, "sélection sync");
                 latch.countDown();
             }
         });
@@ -523,20 +504,13 @@ public class ComboEditableController<T> extends HBox
      * Selects by ObjetCSA id+type match.
      */
     public boolean select_with_id(ObjetCSA elementBD) {
-        for (String item : combo.getItems()) {
-            Object obj = hashOriginale.get(item);
+        for (Map.Entry<String, Object> e : listeComplete.entrySet()) {
+            Object obj = e.getValue();
             if (obj instanceof ObjetCSA iter &&
                     iter.getId() == elementBD.getId() &&
                     iter.getType().equals(elementBD.getType())) {
-                Platform.runLater(() -> {
-                    isProgrammaticChange = true;
-                    try {
-                        combo.getSelectionModel().select(item);
-                        selection = iter;
-                    } finally {
-                        isProgrammaticChange = false;
-                    }
-                });
+                String cle = e.getKey();
+                Platform.runLater(() -> selectionnerCle(cle, false));
                 return true;
             }
         }
@@ -586,40 +560,27 @@ public class ComboEditableController<T> extends HBox
     @FXML
     public void action_effacer(ActionEvent action) {
         log("action_effacer()");
-        hashOriginale.clear(); // rebuild before runLater
-        int compteur = 0;
-        for (Map.Entry<String, Object> entry : hashComplete.entrySet()) {
-            if (compteur++ >= MAX_RESULTATS_COMBO) break;
-            hashOriginale.put(entry.getKey(), entry.getValue());
-        }
         Platform.runLater(() -> {
             isProgrammaticChange = true;
             try {
                 combo.getEditor().clear();
+                combo.setValue(null);
+                combo.getSelectionModel().clearSelection();
                 selection = null;
                 pendingSelection = null;
-                restaurerUI(); // ← direct call, no nested runLater
             } finally {
                 isProgrammaticChange = false;
             }
+            appliquerFiltre("");
         });
     }
 
-
-    private void restaurerUI() {
-        // must be called from FX thread, with isProgrammaticChange already = true
-        combo.getItems().setAll(hashOriginale.keySet());
-        combo.getSelectionModel().clearSelection();
-        combo.setPromptText(hashComplete.size() > MAX_RESULTATS_COMBO
-                ? String.format("Affichage %d/%d — Tapez pour filtrer", MAX_RESULTATS_COMBO, hashComplete.size())
-                : (type == null ? "" : type.getSimpleName()));
-    }
-
-    private void populerHashComplete(Collection<?> liste) {
-        hashComplete.clear();
+    private void populerListeComplete(Collection<?> liste) {
+        listeComplete.clear();
+        clesNormalisees.clear();
         // Ne pas effacer `selection` ici : si deux appels setListeKeepSelection arrivent
         // rapidement, le second verrait selection=null et perdrait la cible de sélection.
-        // La gestion de selection est déléguée à restaurer_liste_initiale_unified.
+        // La gestion de selection est déléguée à restaurerListeEtSelection.
         toStringDupliques.clear();
 
         List<?> listeTrie = new ArrayList<>(liste);
@@ -637,9 +598,11 @@ public class ComboEditableController<T> extends HBox
         });
 
         for (Object elt : listeTrie) {
-            if (type.isInstance(elt))
-                hashComplete.put(genererCle(elt), elt);
-            else
+            if (type.isInstance(elt)) {
+                String cle = genererCle(elt);
+                listeComplete.put(cle, elt);
+                clesNormalisees.put(cle, normalize(cle));
+            } else
                 affiche_console("Insertion non autorisée de " + elt + " dans " + this);
         }
     }
@@ -694,170 +657,175 @@ public class ComboEditableController<T> extends HBox
     // -------------------------------------------------------------------------
 
     /**
-     * Filtre la liste en fonction du texte saisi.
-     * actionEnabler.go() is only called when a real user selection occurred,
-     * not on every keystroke. Filtering does not block the selection listener anymore.
+     * Point d'entrée historique (appels directs depuis {@link #nettoyer_champs()} et
+     * {@link #rafraichir()}, ou FXML) : relance le filtrage immédiatement.
      *
-     * @param event l'événement clavier déclencheur
+     * @param event ignoré (conservé pour compatibilité)
      */
     @FXML
     public void action_filtrer(KeyEvent event) {
-        log("action_filtrer() event=" + (event != null ? event.getCode() : "null"));
+        log("action_filtrer() — filtrage immédiat");
+        appliquerFiltre(normalize(combo.getEditor().getText()));
+    }
 
-        String texteTape = combo.getEditor().getText().trim();
-        int currentLength = texteTape.length();
-        boolean isBackspace = event != null && event.getCode() == KeyCode.BACK_SPACE;
-        boolean isDelete = event != null && event.getCode() == KeyCode.DELETE;
-        boolean isEnter = event != null && event.getCode() == KeyCode.ENTER;
-        boolean isShrinking = currentLength < previousTextLength;
-        previousTextLength = currentLength;
-
-        String texte = normalize(texteTape);
-
-        if (texte.isEmpty()) {
-            restaurer_liste_initiale(pendingSelection, true);
-            if (event != null) {
-                combo.hide();
-                Platform.runLater(combo::show);
+    /**
+     * Recalcule les correspondances pour la saisie donnée (normalisée) puis affiche la
+     * première page. Ne touche jamais au texte de l'éditeur : la valeur du combo est
+     * maintenue égale au texte tapé par l'écouteur installé dans {@code initialize}.
+     *
+     * @param texteNormalise le texte de saisie normalisé (vide = liste complète)
+     */
+    private void appliquerFiltre(String texteNormalise) {
+        correspondances.clear();
+        if (texteNormalise == null || texteNormalise.isEmpty()) {
+            correspondances.addAll(listeComplete.keySet());
+        } else {
+            for (String cle : listeComplete.keySet()) {
+                String n = clesNormalisees.get(cle);
+                if (n != null && n.startsWith(texteNormalise))
+                    correspondances.add(cle);
             }
+        }
+        log("Résultats filtrés: " + correspondances.size());
+        afficherPremierePage();
+        majPrompt();
+    }
+
+    /** Affiche les {@link #TAILLE_PAGE} premières correspondances dans le combo. */
+    private void afficherPremierePage() {
+        int fin = Math.min(TAILLE_PAGE, correspondances.size());
+        isProgrammaticChange = true;
+        try {
+            page.setAll(correspondances.subList(0, fin));
+        } finally {
+            isProgrammaticChange = false;
+        }
+    }
+
+    /** Charge la page suivante (déclenché au scroll), sans dépasser les correspondances. */
+    private void chargerPageSuivante() {
+        if (chargementPageEnCours || page.size() >= correspondances.size()) return;
+        chargementPageEnCours = true;
+        Platform.runLater(() -> {
+            try {
+                int deja = page.size();
+                int fin = Math.min(deja + TAILLE_PAGE, correspondances.size());
+                isProgrammaticChange = true;
+                try {
+                    page.addAll(correspondances.subList(deja, fin));
+                } finally {
+                    isProgrammaticChange = false;
+                }
+            } finally {
+                chargementPageEnCours = false;
+            }
+        });
+    }
+
+    /** Met à jour le texte d'invite (nombre de résultats / type géré). */
+    private void majPrompt() {
+        if (correspondances.size() > TAILLE_PAGE)
+            combo.setPromptText(String.format("%d résultats — tapez pour filtrer", correspondances.size()));
+        else if (type != null)
+            combo.setPromptText(type.getSimpleName());
+    }
+
+    /**
+     * Validation par ENTER : sélectionne l'item surligné si l'utilisateur a navigué dans
+     * la liste, sinon la correspondance exacte du texte saisi, sinon le premier résultat
+     * du filtre courant.
+     */
+    private void validerEntree() {
+        String texteTape = combo.getEditor().getText();
+        String norm = normalize(texteTape);
+        if (norm.isEmpty()) {
+            // Champ vide : aucune sélection.
+            clearSelection();
+            combo.hide();
             return;
         }
-
-        TreeMap<String, Object> inclus = new TreeMap<>();
-        for (Map.Entry<String, Object> entry : hashComplete.entrySet()) {
-            if (inclus.size() >= MAX_RESULTATS_COMBO) break;
-            if (normalize(entry.getKey()).startsWith(texte))
-                inclus.put(entry.getKey(), entry.getValue());
+        // Rafraîchit les correspondances au cas où l'utilisateur n'a pas re-frappé.
+        appliquerFiltre(norm);
+        // Navigation clavier dans la liste : valider l'item surligné.
+        String cleSurlignee = combo.getSelectionModel().getSelectedItem();
+        if (cleSurlignee != null && listeComplete.containsKey(cleSurlignee)) {
+            appliquerSelectionEntree(cleSurlignee, listeComplete.get(cleSurlignee));
+            return;
         }
-        log("Résultats filtrés: " + inclus.size());
+        if (correspondances.isEmpty()) {
+            combo.hide();
+            return;
+        }
+        String cle = listeComplete.containsKey(texteTape) ? texteTape : correspondances.get(0);
+        appliquerSelectionEntree(cle, listeComplete.get(cle));
+    }
 
-        hashOriginale.clear();
-        hashOriginale.putAll(inclus);
-
-        boolean doAutocomplete = !isBackspace && !isDelete && !isShrinking;
-
+    /**
+     * Applique la sélection validée par ENTER et notifie le handler utilisateur.
+     *
+     * @param cle    la clé à sélectionner dans le combo
+     * @param valeur l'objet métier correspondant
+     */
+    private void appliquerSelectionEntree(String cle, Object valeur) {
         Platform.runLater(() -> {
-            isProgrammaticChange = true;
-            try {
-                combo.getItems().setAll(inclus.keySet());
-                combo.getSelectionModel().clearSelection();
-                selection = null;
-
-                if (doAutocomplete && !inclus.isEmpty()) {
-                    String premier = inclus.firstKey();
-                    if (premier.length() >= texteTape.length()) {
-                        combo.getEditor().setText(premier);
-                        combo.getEditor().selectRange(texteTape.length(), premier.length());
-                    }
-                } else {
-                    combo.getEditor().setText(texteTape);
-                    combo.getEditor().positionCaret(texteTape.length());
-                }
-
-                if (!inclus.isEmpty() && inclus.size() <= LIMITE_AFFICHAGE_AUTO && !isEnter) {
-                    combo.hide();
-                    Platform.runLater(combo::show);
-                }
-
-                if (isEnter && !inclus.isEmpty()) {
-                    Map.Entry<String, Object> first = inclus.firstEntry();
-                    selection = first.getValue();
-                    combo.getSelectionModel().select(first.getKey());
-                    combo.hide();
-                }
-            } finally {
-                isProgrammaticChange = false;
-            }
-            // Fire parent notification AFTER flag is cleared, outside try/finally
+            selectionnerCle(cle, true); // silencieux : on notifie nous-mêmes après
+            combo.hide();
             BiConsumer<Object, String> uah = effectiveUserActionHandler();
-            if (isEnter && !inclus.isEmpty() && uah != null && !listenersInhibited)
-                uah.accept(selection, String.valueOf(event));
+            if (uah != null && !listenersInhibited)
+                uah.accept(selection, "validation ENTER");
         });
     }
 
-    private void restaurer_liste_initiale_unified(Object aSelectionner, boolean silent) {
-        hashOriginale.clear();
-        int compteur = 0;
-        for (Map.Entry<String, Object> entry : hashComplete.entrySet()) {
-            if (compteur++ >= MAX_RESULTATS_COMBO) break;
-            hashOriginale.put(entry.getKey(), entry.getValue());
+    /** Remet la vue sur la liste complète, puis applique la sélection demandée si possible. */
+    private void restaurerListeEtSelection(Object aSelectionner, boolean silent) {
+        // Réaffiche la première page de la liste complète.
+        appliquerFiltre("");
+
+        String cle = trouverCle(aSelectionner);
+        if (cle != null) {
+            selectionnerCle(cle, silent);
+        } else {
+            // L'objet à sélectionner n'est pas (encore) dans la liste :
+            // effacer la sélection périmée et mémoriser pour réessai.
+            selection = null;
+            pendingSelection = aSelectionner;
         }
-        Platform.runLater(() -> {
-            isProgrammaticChange = true;
-            try {
-                restaurerUI();
-                if (aSelectionner != null) {
-                    Map.Entry<String, Object> entry = findEntryFor(aSelectionner);
-                    if (entry != null) {
-                        combo.getSelectionModel().select(entry.getKey());
-                        selection = entry.getValue();
-                        pendingSelection = null;
-                    } else {
-                        // L'objet à sélectionner n'est pas dans la nouvelle liste :
-                        // effacer la sélection périmée et mémoriser pour réessai
-                        selection = null;
-                        pendingSelection = aSelectionner;
-                    }
-                } else {
-                    // Aucune cible : effacer toute sélection résiduelle
-                    selection = null;
-                }
-            } finally {
-                isProgrammaticChange = false;
-            }
-            // Fire master event only if not silent and listeners are not inhibited
+    }
+
+    /**
+     * Sélectionne la clé : l'élément est choisi via le modèle s'il est présent dans la
+     * page, sinon la valeur est posée directement (elle n'est pas contrainte aux items).
+     * Le texte de l'éditeur est synchronisé explicitement avec la clé.
+     */
+    private void selectionnerCle(String cle, boolean silent) {
+        Object val = listeComplete.get(cle);
+        isProgrammaticChange = true;
+        try {
+            int idx = page.indexOf(cle);
+            if (idx >= 0)
+                combo.getSelectionModel().select(idx);
+            combo.setValue(cle);
+            combo.getEditor().setText(cle);
+            selection = val;
+            pendingSelection = null;
+        } finally {
+            isProgrammaticChange = false;
+        }
+        if (!silent && val != null) {
             BiConsumer<Object, String> uah = effectiveUserActionHandler();
-            if (!silent && aSelectionner != null && selection != null && uah != null && !listenersInhibited)
-                uah.accept(selection, "sélection unifiée");
-        });
-    }
-
-    private void restaurer_liste_initiale(Object aSelectionner, boolean silent) {
-        hashOriginale.clear();
-        int compteur = 0;
-        for (Map.Entry<String, Object> entry : hashComplete.entrySet()) {
-            if (compteur++ >= MAX_RESULTATS_COMBO) break;
-            hashOriginale.put(entry.getKey(), entry.getValue());
+            if (uah != null && !listenersInhibited)
+                uah.accept(selection, "sélection interne");
         }
-        Platform.runLater(() -> {
-            isProgrammaticChange = true;
-            try {
-                restaurerUI();
-                if (aSelectionner != null) {
-                    Map.Entry<String, Object> entry = findEntryFor(aSelectionner);
-                    if (entry != null) {
-                        combo.getSelectionModel().select(entry.getKey());
-                        selection = entry.getValue();
-                        pendingSelection = null;
-                    } else {
-                        selection = null;
-                        pendingSelection = aSelectionner;
-                    }
-                } else {
-                    selection = null;
-                }
-            } finally {
-                isProgrammaticChange = false;
-            }
-            if (!silent && aSelectionner != null && selection != null && contexte != null && !listenersInhibited)
-                contexte.getUserActionHandler().accept(selection, "sélection différée");
-        });
     }
 
-    private Map.Entry<String, Object> findEntryFor(Object obj) {
+    /** Retourne la clé correspondant à l'objet (ou {@code null} s'il est absent). */
+    private String trouverCle(Object obj) {
         if (obj == null) return null;
-        if (obj instanceof String key) {
-            Object val = hashOriginale.get(key);
-            return val != null ? new AbstractMap.SimpleEntry<>(key, val) : null;
-        }
-        for (Map.Entry<String, Object> e : hashOriginale.entrySet())
+        if (obj instanceof String key)
+            return listeComplete.containsKey(key) ? key : null;
+        for (Map.Entry<String, Object> e : listeComplete.entrySet())
             if (isEquivalent(obj, e.getValue()))
-                return new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue());
-        for (Map.Entry<String, Object> e : hashComplete.entrySet())
-            if (isEquivalent(obj, e.getValue())) {
-                hashOriginale.putIfAbsent(e.getKey(), e.getValue());
-                return new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue());
-            }
+                return e.getKey();
         return null;
     }
 
@@ -1133,7 +1101,7 @@ public class ComboEditableController<T> extends HBox
     public void ajouter_element_direct(ObjetCSA obj) {
         if (!type.isInstance(obj)) return;
         // Reconstruire la liste complète avec le nouvel élément et sélectionner
-        ArrayList<Object> nouvelleListe = new ArrayList<>(hashComplete.values());
+        ArrayList<Object> nouvelleListe = new ArrayList<>(listeComplete.values());
         nouvelleListe.add(obj);
         setListeWithSelection(nouvelleListe, obj);
     }

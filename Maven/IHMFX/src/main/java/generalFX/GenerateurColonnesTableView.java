@@ -1,6 +1,7 @@
 package generalFX;
 
 import controlsFX.MaitreFX;
+import general.FormatNombre;
 import general.ObjetCSA;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -193,6 +194,15 @@ public class GenerateurColonnesTableView {
             } catch (Exception e) {
                 System.err.println("** Explosion dans ListTableBD ! (" + nomVariable + ", " + "Float)");
                 return null;
+            }
+        });
+        // Affichage "à la française" : milliers groupés et virgule décimale.
+        colonne.setCellFactory(column -> new TableCell<ObjetIHM, Float>() {
+            @Override
+            protected void updateItem(Float item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : FormatNombre.nombre(item));
+                setAlignment(Pos.CENTER_RIGHT);
             }
         });
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
@@ -470,7 +480,9 @@ public class GenerateurColonnesTableView {
                     this.setGraphic(null);
 
                     if (item != null && !empty) {
-                        this.setText(String.valueOf(item).toUpperCase());
+                        this.setText(item instanceof Number
+                                ? FormatNombre.nombre((Number) item)
+                                : String.valueOf(item).toUpperCase());
                         // setTextFill(FX_RGBConverter.convert_rgb_2_color(item.));
                     }
                 }

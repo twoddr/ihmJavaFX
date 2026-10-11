@@ -18,12 +18,12 @@ import java.util.function.Function;
 import general.GestionnaireImbrications;
 import general.GestionnaireRetour;
 import general.Monostable;
-import generalFX.StylesheetsFX;
 import general.ObjetCSA;
 import generalFX.CustomEditor;
 import generalFX.EcriveurChamps;
 import generalFX.FX_RGBConverter;
 import generalFX.LecteurChamps;
+import generalFX.StylesheetsFX;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -339,6 +339,7 @@ public class EditorPaneController extends BorderPane
             charger_donnees(prefixePath, objetCSA);
             return;
         }
+        monObjet = objetCSA;
         editeurPersonnel.charger_donnees(objetCSA);
     }
 
@@ -1066,6 +1067,14 @@ public class EditorPaneController extends BorderPane
                         Object objet = arrayList.get(2);
                         if (objet instanceof ObjetCSA) {
                             reinitialiser_affichage((ObjetCSA) objet);
+                            return;
+                        }
+                        // ça peut aussi être une monoliste ! (cas d'une requête "détail" par id)
+                        if (monObjet != null && monObjet.getId() > 0
+                                && objet instanceof ArrayList
+                                && ((ArrayList<?>) objet).size() == 1
+                                && ((ArrayList<?>) objet).get(0) instanceof ObjetCSA) {
+                            reinitialiser_affichage((ObjetCSA) ((ArrayList<?>) objet).get(0));
                             return;
                         }
                         affiche_console("Rafraichisseur de EditorPane s'attend à recevoir un objetCSA" +

@@ -1,6 +1,5 @@
 package controlsFX;
 
-
 import general.ObjetCSA;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -38,7 +37,8 @@ public class ListeFiltrableController extends AnchorPane implements Initializabl
     public HBox ligneFiltre;
     private ArrayList<Object> listeOriginale = new ArrayList<>();
     /**
-     * @deprecated Utiliser {@link #setOnSelection(java.util.function.Consumer)} à la place.
+     * @deprecated Utiliser {@link #setOnSelection(java.util.function.Consumer)} à
+     *             la place.
      */
     @Deprecated
     private MaitreFX maitre;
@@ -63,7 +63,8 @@ public class ListeFiltrableController extends AnchorPane implements Initializabl
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        // textProperty listener : déclenche le filtre à chaque frappe, collage, suppression…
+        // textProperty listener : déclenche le filtre à chaque frappe, collage,
+        // suppression…
         tfFiltre.textProperty().addListener((obs, oldVal, newVal) -> action_filtrer(null));
         liste.setOnMouseReleased(this::action_clic_liste);
         liste.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -74,11 +75,13 @@ public class ListeFiltrableController extends AnchorPane implements Initializabl
     }
 
     /**
-     * Mémorise l'ObjetCSA à sélectionner et tente de l'appliquer dans la liste courante.
+     * Mémorise l'ObjetCSA à sélectionner et tente de l'appliquer dans la liste
+     * courante.
      * Si la liste n'est pas encore chargée ou ne contient pas l'élément,
      * la sélection sera appliquée automatiquement au prochain chargement de liste.
      *
-     * @param obj l'ObjetCSA à sélectionner (null pour effacer la sélection mémorisée)
+     * @param obj l'ObjetCSA à sélectionner (null pour effacer la sélection
+     *            mémorisée)
      */
     public void select(ObjetCSA obj) {
         selection = obj;
@@ -108,7 +111,8 @@ public class ListeFiltrableController extends AnchorPane implements Initializabl
     }
 
     /**
-     * @deprecated Utiliser {@link #setOnSelection(java.util.function.Consumer)} à la place.
+     * @deprecated Utiliser {@link #setOnSelection(java.util.function.Consumer)} à
+     *             la place.
      */
     @Deprecated
     public void setMaitre(MaitreFX fx) {
@@ -131,6 +135,7 @@ public class ListeFiltrableController extends AnchorPane implements Initializabl
 
     public void activer_ligneFiltre(boolean b) {
         ligneFiltre.setVisible(b);
+        ligneFiltre.setManaged(b);
         ligneFiltre.setPrefHeight(b ? 35 : 0);
     }
 
@@ -214,7 +219,8 @@ public class ListeFiltrableController extends AnchorPane implements Initializabl
     }
 
     /**
-     * Vérifie si deux objets correspondent, en tenant compte de l'identité ObjetCSA.
+     * Vérifie si deux objets correspondent, en tenant compte de l'identité
+     * ObjetCSA.
      */
     private boolean correspondA(Object itemListe, Object ref) {
         if (itemListe instanceof ObjetCSA && ref instanceof ObjetCSA) {
@@ -247,8 +253,10 @@ public class ListeFiltrableController extends AnchorPane implements Initializabl
             }
         } else if (selection != null) {
             String msg = "ListeFiltrableController/action_clic_liste : la sélection n'est pas un ObjetCSA. Action ignorée.";
-            if (messageHandler != null) messageHandler.accept(msg);
-            else if (maitre != null) maitre.affiche_console(msg);
+            if (messageHandler != null)
+                messageHandler.accept(msg);
+            else if (maitre != null)
+                maitre.affiche_console(msg);
             return;
         }
         System.err.println("La liste filtrable ne trouve pas d'éditeur. Impossible de charger les données !");

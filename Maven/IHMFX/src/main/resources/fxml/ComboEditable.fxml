@@ -14,7 +14,7 @@
     <!-- ComboBox flexible qui prend tout l'espace disponible -->
     <ComboBox fx:id="combo" editable="true"
               minWidth="150" maxWidth="600" HBox.hgrow="ALWAYS"
-              onKeyReleased="#action_filtrer" promptText="Vide !"/>
+              promptText="Vide !"/>
 
     <!-- Boutons à taille fixe -->
     <Button fx:id="btnAjouter" mnemonicParsing="false" onAction="#action_ajouter"
