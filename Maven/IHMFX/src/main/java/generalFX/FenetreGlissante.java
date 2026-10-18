@@ -1,5 +1,7 @@
 package generalFX;
 
+import general.FormatNombre;
+
 import java.util.ArrayList;
 
 public class FenetreGlissante<T> {
@@ -208,8 +210,8 @@ public class FenetreGlissante<T> {
      * @return informations de déboguage sur les tailles de fenetre et de liste
      */
     public String getDebugInfo() {
-        return String.format("Fenêtre [%d-%d] sur %d éléments (%.1f%%)",
-                indexDebut, indexFin, listeTotale.size(),
-                (indexFin * 100.0) / Math.max(1, listeTotale.size()));
+        double pourcentage = (indexFin * 100.0) / Math.max(1, listeTotale.size());
+        return "Fenêtre [" + indexDebut + "-" + indexFin + "] sur " + listeTotale.size()
+                + " éléments (" + FormatNombre.pourcent(pourcentage) + ")";
     }
 }

@@ -2,6 +2,7 @@ package generalFX;
 
 import controlsFX.*;
 import general.DateString;
+import general.FormatNombre;
 import general.GestionnaireImbrications;
 import general.ObjetCSA;
 import javafx.application.Platform;
@@ -37,6 +38,25 @@ public class EcriveurChamps {
     }
 
     /**
+     * Texte à afficher pour une valeur : les nombres flottants sont formatés
+     * « à la française » (milliers groupés par une espace insécable, virgule
+     * décimale, sans zéro inutile) ; les entiers et les autres types restent
+     * inchangés.
+     *
+     * @param valeur la valeur à afficher
+     * @return le texte à placer dans le composant
+     */
+    private static String texteAffichage(Object valeur) {
+        if (valeur instanceof ObjetCSA) {
+            return ((ObjetCSA) valeur).toExport();
+        }
+        if (valeur instanceof Number) {
+            return FormatNombre.nombre((Number) valeur);
+        }
+        return String.valueOf(valeur);
+    }
+
+    /**
      * Permet de charger les données des champs dans un objet représenté par une
      * hashmap
      *
@@ -63,9 +83,7 @@ public class EcriveurChamps {
                 if (noeud instanceof TextInputControl) {
                     TextInputControl textInput = (TextInputControl) noeud;
                     Platform.runLater(() -> {
-                        textInput.setText(finalObjet instanceof ObjetCSA ?
-                                ((ObjetCSA) finalObjet).toExport() :
-                                String.valueOf(finalObjet));
+                        textInput.setText(texteAffichage(finalObjet));
                     });
                 } else if (noeud instanceof ComboFiltrableController) {
                     ObjetCSA objetFK = getObjet(elementBD, cle);
@@ -188,9 +206,7 @@ public class EcriveurChamps {
                 } else if (noeud instanceof Labeled) {
                     Labeled labeled = (Labeled) noeud;
                     Platform.runLater(() -> {
-                        labeled.setText(finalObjet instanceof ObjetCSA ?
-                                ((ObjetCSA) finalObjet).toExport() :
-                                String.valueOf(finalObjet));
+                        labeled.setText(texteAffichage(finalObjet));
                     });
                 }
             }

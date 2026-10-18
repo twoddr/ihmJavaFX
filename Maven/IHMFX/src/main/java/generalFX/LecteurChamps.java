@@ -15,6 +15,7 @@ import controlsFX.ListeBDController;
 import controlsFX.ListeFiltrableController;
 import controlsFX.TableViewCRUD;
 import general.DetecteurModification;
+import general.FormatNombre;
 import general.GestionnaireImbrications;
 import general.ObjetCSA;
 import javafx.scene.Node;
@@ -139,18 +140,16 @@ public class LecteurChamps {
             String texte = ((TextField) noeud).getText().trim();
             if (classe != null) {
                 if (classe.equals(Integer.class)) {
-                    try {
-                        return Integer.parseInt(texte);
-                    } catch (NumberFormatException ex) {
-                        return texte;
-                    }
+                    Integer valeur = FormatNombre.versInteger(texte);
+                    return valeur == null ? texte : valeur;
                 }
                 if (classe.equals(Float.class)) {
-                    try {
-                        return Float.parseFloat(texte.replace(',', '.'));
-                    } catch (NumberFormatException e) {
-                        return texte;
-                    }
+                    Float valeur = FormatNombre.versFloat(texte);
+                    return valeur == null ? texte : valeur;
+                }
+                if (classe.equals(Double.class)) {
+                    Double valeur = FormatNombre.versDouble(texte);
+                    return valeur == null ? texte : valeur;
                 }
             }
             return texte;

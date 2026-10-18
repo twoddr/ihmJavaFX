@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import general.FormatNombre;
 import general.GestionnaireRetour;
 import general.Monostable;
 import general.ObjetCSA;
@@ -217,6 +218,15 @@ public class TableViewCRUD extends TreeTableView<ObjetIHM> implements Gestionnai
                 return null;
             }
         });
+        // Affichage "à la française" : milliers groupés et virgule décimale.
+        colonne.setCellFactory(column -> new TreeTableCell<ObjetIHM, Float>() {
+            @Override
+            protected void updateItem(Float item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : FormatNombre.nombre(item));
+                setAlignment(Pos.CENTER_RIGHT);
+            }
+        });
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
         // tableau.getWidth() / 10));
         return colonne;
@@ -403,7 +413,9 @@ public class TableViewCRUD extends TreeTableView<ObjetIHM> implements Gestionnai
                     this.setGraphic(null);
 
                     if (item != null && !empty) {
-                        this.setText(String.valueOf(item));
+                        this.setText(item instanceof Number
+                                ? FormatNombre.nombre((Number) item)
+                                : String.valueOf(item));
                         // setTextFill(FX_RGBConverter.convert_rgb_2_color(item.));
                     }
                 }
