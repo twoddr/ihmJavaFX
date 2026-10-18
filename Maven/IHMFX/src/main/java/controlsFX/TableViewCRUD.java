@@ -172,6 +172,7 @@ public class TableViewCRUD extends TreeTableView<ObjetIHM> implements Gestionnai
                 return null;
             }
         });
+        appliquerAlignement(colonne, "colonne-centree", "CENTER");
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
         // tableau.getWidth() / 10));
         return colonne;
@@ -202,6 +203,7 @@ public class TableViewCRUD extends TreeTableView<ObjetIHM> implements Gestionnai
                 return null;
             }
         });
+        appliquerAlignement(colonne, "colonne-centree", "CENTER");
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
         // tableau.getWidth() / 10));
         return colonne;
@@ -227,6 +229,7 @@ public class TableViewCRUD extends TreeTableView<ObjetIHM> implements Gestionnai
                 setAlignment(Pos.CENTER_RIGHT);
             }
         });
+        appliquerAlignement(colonne, "colonne-nombre", "CENTER_RIGHT");
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
         // tableau.getWidth() / 10));
         return colonne;
@@ -466,6 +469,9 @@ public class TableViewCRUD extends TreeTableView<ObjetIHM> implements Gestionnai
                     }
                 };
             });
+        }
+        if (!nomVariable.toLowerCase().contains("ouleur")) {
+            appliquerAlignement(colonne, "colonne-nombre", "CENTER_RIGHT");
         }
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
         // tableau.getWidth() / 10));
@@ -1031,4 +1037,10 @@ public class TableViewCRUD extends TreeTableView<ObjetIHM> implements Gestionnai
         System.err.println("La listeTable reçoit une requête non conforme : " + list);
     }
 
+    private static void appliquerAlignement(TreeTableColumn<?, ?> colonne, String classe, String alignement) {
+        if (!colonne.getStyleClass().contains(classe)) {
+            colonne.getStyleClass().add(classe);
+        }
+        colonne.setStyle("-fx-alignment: " + alignement + ";");
+    }
 }

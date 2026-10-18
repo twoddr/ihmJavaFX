@@ -187,3 +187,29 @@
 .tree-cell .tree-button-danger {
     -fx-opacity: 0.3;
 }
+
+/* ==== Alignement des colonnes (dates centrées, nombres à droite) ==== */
+.table-view .table-cell.colonne-centree,
+.tree-table-view .tree-table-cell.colonne-centree {
+    -fx-alignment: CENTER;
+}
+
+.table-view .table-cell.colonne-nombre,
+.tree-table-view .tree-table-cell.colonne-nombre {
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.table-view .table-cell.colonne-nombre .text-field,
+.tree-table-view .tree-table-cell.colonne-nombre .text-field {
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.table-view .column-header.colonne-centree .label,
+.tree-table-view .column-header.colonne-centree .label {
+    -fx-alignment: CENTER;
+}
+
+.table-view .column-header.colonne-nombre .label,
+.tree-table-view .column-header.colonne-nombre .label {
+    -fx-alignment: CENTER_RIGHT;
+}

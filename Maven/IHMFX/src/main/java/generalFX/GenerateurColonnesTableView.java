@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -182,6 +183,7 @@ public class GenerateurColonnesTableView {
             return null;
         });
 
+        appliquerAlignement(colonne, "colonne-centree", "CENTER");
         return colonne;
     }
 
@@ -205,6 +207,7 @@ public class GenerateurColonnesTableView {
                 setAlignment(Pos.CENTER_RIGHT);
             }
         });
+        appliquerAlignement(colonne, "colonne-nombre", "CENTER_RIGHT");
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
         // tableau.getWidth() / 10));
         return colonne;
@@ -343,6 +346,9 @@ public class GenerateurColonnesTableView {
                     }
                 };
             });
+        }
+        if (!nomVariable.toLowerCase().contains("ouleur")) {
+            appliquerAlignement(colonne, "colonne-nombre", "CENTER_RIGHT");
         }
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
         // tableau.getWidth() / 10));
@@ -491,5 +497,12 @@ public class GenerateurColonnesTableView {
         // colonne.setPrefWidth(Math.max(titre.length() * TAILLE_CARACTERE,
         // tableau.getWidth() / 10));
         return colonne;
+    }
+
+    private static void appliquerAlignement(TableColumnBase<?, ?> colonne, String classe, String alignement) {
+        if (!colonne.getStyleClass().contains(classe)) {
+            colonne.getStyleClass().add(classe);
+        }
+        colonne.setStyle("-fx-alignment: " + alignement + ";");
     }
 }
